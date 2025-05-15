@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mai2n.c                                             :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:49:54 by e                 #+#    #+#             */
-/*   Updated: 2025/04/25 12:28:25 by e                ###   ########.fr       */
+/*   Updated: 2025/05/15 13:26:53 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ int main(int argc, char **argv, char **envp)
 		perror("malloc");
 		return (1);
 	}
-	set_values(mini, envp);
-	mini->env_list = init_envs(envp, mini);
+	set_values(mini);
+	mini->env_list = init_envs(envp, *mini);
 	read_input(mini);
 	free_values(mini);
 	free(mini);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/05/14 19:23:21 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/05/15 15:02:05 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@
 typedef struct s_cmd
 {
 	char	*cmd;
-	char	**args;
-	t_env	envs;
+	char	*args[MAX_ARGS];
+	int		argc;
 }	t_cmd;
 
 typedef struct s_env
@@ -55,37 +55,27 @@ typedef struct s_mini
 	int		last_status;
 	char	*full_path;
 	t_env	*env_list;
+	char	**envp;
 }	t_mini;
 
 
-void	set_values(t_mini *mini, char **envp);
+void	set_values(t_mini *mini);
 void	free_values(t_mini *mini);
 int		read_input(t_mini *mini);
-int		parse_input(t_mini *mini, char *input);
-int		execute_commands(t_mini *mini);
 int		execute_command(char **args, t_mini *mini);
-int		execute_builtin(t_mini *mini, t_cmd *cmd);
-int		handle_redirections(t_cmd *cmd);
-void	reset_redirections(t_cmd *cmd);
+int		execute_builtin(t_mini *mini);
 void	update_path(t_mini *mini);
-char	*find_executable(char *cmd);
-
-int		mini_exit(t_mini *mini, t_cmd *cmd);
-int		mini_cd(t_mini *mini, t_cmd *cmd);
-int		mini_pwd(t_mini *mini, t_cmd *cmd);
-int		mini_echo(t_mini *mini, t_cmd *cmd);
-int		mini_env(t_mini *mini, t_cmd *cmd);
-int		mini_export(t_mini *mini, t_cmd *cmd);
-int		mini_unset(t_mini *mini, t_cmd *cmd);
-
-char	*ft_strtok(char *str, const char *delim);
-
+void	update_env_array(t_mini *mini);
+char	**convert_env_list_to_array(t_env *env_list);
+void	add_env(t_env **list, char *key, char *value, t_mini mini);
 void	list_del(t_env **lst, char *key);
 void	list_add(t_env **lst, char *key, char *value);
 void	swap_value(t_env **lst, char *key, char *value);
 void	destroy_list(t_env **lst);
 char	*get_value(t_env **lst, char *key);
-
-t_env	*init_envs(char **envp, t_mini *mini);
+int		execute_builtin(t_mini *mini);
+t_env *init_envs(char **envp, t_mini mini);
 void	print_envs(t_env **list);
+
+void	del_env(t_env **list, char *key);
 #endif

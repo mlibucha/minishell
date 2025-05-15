@@ -1,185 +1,150 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
+/*   Updated: 2025/05/15 11:55:00 by e                ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini.h"
 
-void update_path(t_mini *mini)
+char *ft_strjoin3(char const *s1, char const *s2, char const *s3)
 {
-    char *pwd = getcwd(NULL, 0);
-    
-    if (pwd == NULL)
-    {
-        ft_putstr_fd("mini: error: cannot get current directory: ", STDERR_FILENO);
-        ft_putendl_fd(strerror(-1), STDERR_FILENO);
-        mini->status = 1;
-        return;
-    }
-    free(mini->path);
-    mini->path = pwd;
-    mini->status = 0;
+	char    *str;
+	size_t  len1;
+	size_t  len2;
+	size_t  len3;
+
+	if (!s1 || !s2 || !s3)
+		return (NULL);
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	len3 = ft_strlen(s3);
+	str = malloc(len1 + len2 + len3 + 1);
+	if (!str)
+		return (NULL);
+	ft_memcpy(str, s1, len1);
+	ft_memcpy(str + len1, s2, len2);
+	ft_memcpy(str + len1 + len2, s3, len3);
+	str[len1 + len2 + len3] = '\0';
+	return (str);
 }
 
-static void setup_redirections(t_cmd *cmd)
+char **convert_env_list_to_array(t_env *env_list)
 {
-    int fd;
-    
-    if (cmd->input != NULL)
-    {
-        fd = open(cmd->input, O_RDONLY);
-        if (fd < 0)
-        {
-            perror("mini: open input");
-            exit(EXIT_FAILURE);
-        }
-        dup2(fd, STDIN_FILENO);
-        close(fd);
-    }
-    
-    if (cmd->output != NULL)
-    {
-        int flags = O_WRONLY | O_CREAT;
-        if (cmd->append)
-        {
-            flags = flags | O_APPEND;
-        }
-        else
-        {
-            flags = flags | O_TRUNC;
-        }
-        fd = open(cmd->output, flags, 0644);
-        if (fd < 0)
-        {
-            perror("mini: open output");
-            exit(EXIT_FAILURE);
-        }
-        dup2(fd, STDOUT_FILENO);
-        close(fd);
-    }
+	t_env   *current;
+	char    **env_array;
+	int     count;
+	int     i;
+
+	count = 0;
+	current = env_list;
+	while (current)
+	{
+		if (current->key && current->value)
+			count++;
+		current = current->next;
+	}
+	env_array = malloc(sizeof(char *) * (count + 1));
+	if (!env_array)
+		return (NULL);
+	current = env_list;
+	i = 0;
+	while (current)
+	{
+		if (current->key && current->value)
+		{
+			env_array[i] = ft_strjoin3(current->key, "=", current->value);
+			if (!env_array[i])
+			{
+				while (--i >= 0)
+					free(env_array[i]);
+				free(env_array);
+				return (NULL);
+			}
+			i++;
+		}
+		current = current->next;
+	}
+	env_array[i] = NULL;
+	return (env_array);
 }
 
-static void exec_command(t_cmd *cmd, t_mini *mini)
+char *find_command_path(char *cmd, t_env *env_list)
 {
-    char *path = find_executable(cmd->args[0]);
-    
-    if (path == NULL)
-    {
-        ft_putstr_fd("mini: command not found: ", 2);
-        ft_putendl_fd(cmd->args[0], 2);
-        exit(127);
-    }
-    
-    setup_redirections(cmd);
-    execve(path, cmd->args, mini->envp);
-    perror("mini");
-    free(path);
-    exit(EXIT_FAILURE);
+	char	*path;
+	char	*path_env;
+	char	**paths;
+	char	*full_path;
+	int		i;
+
+	if (!cmd)
+		return (NULL);
+	if (access(cmd, X_OK) == 0)
+		return (ft_strdup(cmd));
+	path_env = get_value(&env_list, "PATH");
+	if (!path_env)
+		return (NULL);
+	paths = ft_split(path_env, ':');
+	if (!paths)
+		return (NULL);
+	i = -1;
+	while (paths[++i])
+	{
+		path = ft_strjoin(paths[i], "/");
+		full_path = ft_strjoin(path, cmd);
+		free(path);
+		if (access(full_path, X_OK) == 0)
+		{
+			ft_free(paths);
+			return (full_path);
+		}
+		free(full_path);
+	}
+	ft_free(paths);
+	return (NULL);
 }
 
-int execute_pipeline(t_cmd *cmds, int cmd_count, t_mini *mini)
+int execute_command(char **args, t_mini *mini)
 {
-    int prev_pipe = -1;
-    int pipefd[2];
-    pid_t pid;
-    int status;
-    int i = 0;
+	pid_t	pid;
+	int		status;
+	char	*cmd_path = NULL;
 
-    while (i < cmd_count)
-    {
-        if (i < cmd_count - 1)
-        {
-            if (pipe(pipefd) != 0)
-            {
-                perror("mini: pipe");
-                return 1;
-            }
-        }
-        
-        pid = fork();
-        if (pid == 0)
-        {
-            if (i > 0)
-            {
-                dup2(prev_pipe, STDIN_FILENO);
-                close(prev_pipe);
-            }
-            if (i < cmd_count - 1)
-            {
-                close(pipefd[0]);
-                dup2(pipefd[1], STDOUT_FILENO);
-                close(pipefd[1]);
-            }
-            exec_command(&cmds[i], mini);
-        }
-        else if (pid < 0)
-        {
-            perror("mini: fork");
-            return 1;
-        }
-        
-        if (i > 0)
-        {
-            close(prev_pipe);
-        }
-        if (i < cmd_count - 1)
-        {
-            close(pipefd[1]);
-            prev_pipe = pipefd[0];
-        }
-        i++;
-    }
-    
-    i = 0;
-    while (i < cmd_count)
-    {
-        waitpid(-1, &status, 0);
-        i++;
-    }
-    
-    if (WIFEXITED(status))
-    {
-        return WEXITSTATUS(status);
-    }
-    return 1;
-}
-
-char *find_executable(char *cmd)
-{
-    char *path;
-    char *path_copy;
-    char *dir;
-    char *full_path;
-    size_t len;
-
-    if (ft_strchr(cmd, '/'))
-    {
-        if (access(cmd, X_OK) == 0)
-            return ft_strdup(cmd);
-        return NULL;
-    }
-
-    path = getenv("PATH");
-    if (path == NULL)
-        return NULL;
-
-    path_copy = ft_strdup(path);
-    dir = ft_strtok(path_copy, ":");
-    
-    while (dir != NULL)
-    {
-        len = ft_strlen(dir) + ft_strlen(cmd) + 2;
-        full_path = malloc(len);
-        if (full_path == NULL)
-            break;
-        
-        ft_strlcpy(full_path, dir, len);
-        ft_strlcat(full_path, "/", len);
-        ft_strlcat(full_path, cmd, len);
-        
-        if (access(full_path, X_OK) == 0)
-        {
-            free(path_copy);
-            return full_path;
-        }
-        free(full_path);
-        dir = ft_strtok(NULL, ":");
-    }
-    free(path_copy);
-    return NULL;
+	if (!args || !args[0])
+		return (1);
+	pid = fork();
+	if (pid == 0)
+	{
+		// if (handle_redirections(mini->cmds) != 0)
+		//     exit(EXIT_FAILURE);
+		cmd_path = find_command_path(args[0], mini->env_list);
+		if (!cmd_path)
+		{
+			ft_putstr_fd("mini: command not found: ", 2);
+			ft_putendl_fd(args[0], 2);
+			exit(127);
+		}
+		execve(cmd_path, args, mini->envp);
+		perror("mini");
+		free(cmd_path);
+		exit(EXIT_FAILURE);
+	}
+	else if (pid < 0)
+	{
+		perror("fork");
+		if (cmd_path)
+			free(cmd_path);
+		return (1);
+	}
+	waitpid(pid, &status, 0);
+	if (cmd_path)
+		free(cmd_path);
+	if (WIFEXITED(status))
+		mini->status = WEXITSTATUS(status);
+	return (mini->status);
 }

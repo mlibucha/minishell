@@ -1,25 +1,55 @@
 #include "mini.h"
 
-static int	parse_to_cmd(t_mini *mini, char **args)
+// static int	parse_to_cmd(t_mini *mini, char **args)
+// {
+// 	t_cmd	*cmd;
+// 	int		i;
+
+
+// 	cmd = malloc(sizeof(t_cmd));
+// 	if (!cmd)
+// 		return (1);
+// 	ft_memset(cmd, 0, sizeof(t_cmd));
+// 	i = 0;
+// 	while (args[i] && i < MAX_ARGS - 1)
+// 	{
+// 		cmd->args[i] = args[i];
+// 		i++;
+// 	}
+// 	cmd->argc = i;
+// 	cmd->args[i] = NULL;
+// 	mini->cmds = cmd;
+// 	return (execute_builtin(mini));
+// }
+
+static int parse_to_cmd(t_mini *mini, char **args)
 {
-	t_cmd	*cmd;
-	int		i;
+    t_cmd *cmd;
+    int i;
 
-
-	cmd = malloc(sizeof(t_cmd));
-	if (!cmd)
-		return (1);
-	ft_memset(cmd, 0, sizeof(t_cmd));
-	i = 0;
-	while (args[i] && i < MAX_ARGS - 1)
-	{
-		cmd->args[i] = args[i];
-		i++;
-	}
-	cmd->argc = i;
-	cmd->args[i] = NULL;
-	mini->cmds = cmd;
-	return (execute_builtin(mini, cmd));
+    cmd = malloc(sizeof(t_cmd));
+    if (!cmd)
+        return (1);
+    ft_memset(cmd, 0, sizeof(t_cmd));
+    cmd->cmd = ft_strdup(args[0]);
+    i = 0;
+    while (args[i] && i < MAX_ARGS - 1)
+    {
+        cmd->args[i] = ft_strdup(args[i]);
+        if (!cmd->args[i])
+        {
+            while (--i >= 0)
+                free(cmd->args[i]);
+            free(cmd->cmd);
+            free(cmd);
+            return (1);
+        }
+        i++;
+    }
+    cmd->argc = i;
+    cmd->args[i] = NULL;
+    mini->cmds = cmd;
+    return (execute_builtin(mini));
 }
 
 void	check_special_chars(char *input, char *parsed_input, int *i, int *j)
@@ -81,7 +111,6 @@ char	**tokenize_input(char *input)
 	i = -1;
 	j = 0;
 	parsed_input = malloc (input_len(input) + 1);
-	printf("%d\n",input_len(input));
 	while (input[++i])
 	{
 		if (input[i] == '|' || input[i] == '<' || input[i] == '>')
@@ -112,6 +141,7 @@ int check_input(char *input, t_mini *mini)
 		ft_free(args);
 		return (ret);
 	}
+	write(1, "te\n", 3);
 	ret = execute_command(args, mini);
 	ft_free(args);
 	free(mini->cmds);
@@ -128,6 +158,11 @@ int	read_input(t_mini *mini)
 	while (1)
 	{
 		input = readline("\033[32mmini> \033[0m");
+		if (!input)
+        {
+            ft_putstr_fd("exit\n", 1);
+            exit(mini->status);
+        }
 		if (*input)
 		{
 			add_history(input);

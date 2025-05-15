@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   enviromentals.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:56:16 by estolarc          #+#    #+#             */
-/*   Updated: 2025/05/14 16:05:02 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/05/15 11:43:36 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*split_value(char *str)
 	return (NULL);
 }
 
-void	add_env(t_env **list, char *key, char *value)
+void	add_env(t_env **list, char *key, char *value, t_mini mini)
 {
 	if (key == NULL)
 		return;
@@ -74,6 +74,7 @@ void	add_env(t_env **list, char *key, char *value)
 		list_add(list, key, value);
 	else
 		swap_value(list, key, value);
+	update_env_array(&mini);
 }
 
 void	del_env(t_env **list, char *key)
@@ -83,15 +84,58 @@ void	del_env(t_env **list, char *key)
 	list_del(list, key);
 }
 
-t_env	*init_envs(char **envp, t_mini *mini)
+// t_env	*init_envs(char **envp)
+// {
+// 	t_env	*list;
+// 	int		i;
+
+// 	i = -1;
+// 	list = NULL;
+// 	while (envp[++i])
+// 		add_env(&list, split_key(envp[i]), split_value(envp[i]));
+// 	return (list);
+// }
+
+void update_env_array(t_mini *mini)
 {
-	t_env	*list;
-	int		i;
+    int i;
+
+    i = 0;
+    // Free existing environment array if it exists
+    if (mini->envp)
+    {
+        while (mini->envp[i])
+        {
+            free(mini->envp[i]);
+            i++;
+        }
+        free(mini->envp);
+    }
+    // Create new environment array from the linked list
+    mini->envp = convert_env_list_to_array(mini->env_list);
+}
+
+t_env *init_envs(char **envp, t_mini mini)
+{
+	t_env   *list;
+	int     i;
+	char    *key;
+	char    *value;
 
 	i = -1;
 	list = NULL;
 	while (envp[++i])
-		add_env(&list, split_key(envp[i]), split_value(envp[i]));
+	{
+		key = split_key(envp[i]);
+		value = split_value(envp[i]);
+		if (key && value)  // Only add if both are valid
+		{
+			add_env(&list, key, value, mini);
+			free(key);    // add_env makes copies, so we can free these
+			free(value);
+		}
+	}
+	mini.envp = convert_env_list_to_array(list);  // Update the envp array
 	return (list);
 }
 
