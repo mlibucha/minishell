@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: mlibucha <mlibucha@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/05/15 11:55:00 by e                ###   ########.fr       */
+/*   Updated: 2025/05/16 08:32:50 by mlibucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,27 +109,27 @@ char *find_command_path(char *cmd, t_env *env_list)
 	return (NULL);
 }
 
-int execute_command(char **args, t_mini *mini)
+int execute_command(t_mini *mini)
 {
 	pid_t	pid;
 	int		status;
 	char	*cmd_path = NULL;
 
-	if (!args || !args[0])
-		return (1);
+	// if (!args || !args[0])
+	// 	return (1);
 	pid = fork();
 	if (pid == 0)
 	{
 		// if (handle_redirections(mini->cmds) != 0)
 		//     exit(EXIT_FAILURE);
-		cmd_path = find_command_path(args[0], mini->env_list);
+		cmd_path = find_command_path(mini->cmds->args[0], mini->env_list);
 		if (!cmd_path)
 		{
 			ft_putstr_fd("mini: command not found: ", 2);
-			ft_putendl_fd(args[0], 2);
+			ft_putendl_fd(mini->cmds->args[0], 2);
 			exit(127);
 		}
-		execve(cmd_path, args, mini->envp);
+		execve(cmd_path, mini->cmds->args, mini->envp);
 		perror("mini");
 		free(cmd_path);
 		exit(EXIT_FAILURE);

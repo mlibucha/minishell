@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   values.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: mlibucha <mlibucha@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:01:16 by e                 #+#    #+#             */
-/*   Updated: 2025/05/15 11:56:20 by e                ###   ########.fr       */
+/*   Updated: 2025/05/16 08:41:26 by mlibucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void update_path(t_mini *mini)
 	char *pwd;
 
 	pwd = getcwd(NULL, 0);
-	printf("%s", pwd);
 	if (!pwd)
 	{
 		ft_putstr_fd("mini: error: cannot get current directory: ", STDERR_FILENO);

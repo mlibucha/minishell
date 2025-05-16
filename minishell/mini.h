@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: mlibucha <mlibucha@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/05/15 15:02:05 by e                ###   ########.fr       */
+/*   Updated: 2025/05/16 08:41:58 by mlibucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_cmd
 	char	*cmd;
 	char	*args[MAX_ARGS];
 	int		argc;
+	int		counter;
 }	t_cmd;
 
 typedef struct s_env
@@ -62,7 +63,7 @@ typedef struct s_mini
 void	set_values(t_mini *mini);
 void	free_values(t_mini *mini);
 int		read_input(t_mini *mini);
-int		execute_command(char **args, t_mini *mini);
+int		execute_command(t_mini *mini);
 int		execute_builtin(t_mini *mini);
 void	update_path(t_mini *mini);
 void	update_env_array(t_mini *mini);
@@ -78,4 +79,7 @@ t_env *init_envs(char **envp, t_mini mini);
 void	print_envs(t_env **list);
 
 void	del_env(t_env **list, char *key);
+
+int	ft_strcmp(const char *s1, const char *s2);
+
 #endif

@@ -1,55 +1,51 @@
 #include "mini.h"
 
-// static int	parse_to_cmd(t_mini *mini, char **args)
-// {
-// 	t_cmd	*cmd;
-// 	int		i;
-
-
-// 	cmd = malloc(sizeof(t_cmd));
-// 	if (!cmd)
-// 		return (1);
-// 	ft_memset(cmd, 0, sizeof(t_cmd));
-// 	i = 0;
-// 	while (args[i] && i < MAX_ARGS - 1)
-// 	{
-// 		cmd->args[i] = args[i];
-// 		i++;
-// 	}
-// 	cmd->argc = i;
-// 	cmd->args[i] = NULL;
-// 	mini->cmds = cmd;
-// 	return (execute_builtin(mini));
-// }
-
-static int parse_to_cmd(t_mini *mini, char **args)
+int	save_command_block(t_cmd *cmds, int i, int k, char **args)
 {
-    t_cmd *cmd;
-    int i;
+	int	x;
+	int	z;
 
-    cmd = malloc(sizeof(t_cmd));
-    if (!cmd)
-        return (1);
-    ft_memset(cmd, 0, sizeof(t_cmd));
-    cmd->cmd = ft_strdup(args[0]);
-    i = 0;
-    while (args[i] && i < MAX_ARGS - 1)
-    {
-        cmd->args[i] = ft_strdup(args[i]);
-        if (!cmd->args[i])
-        {
-            while (--i >= 0)
-                free(cmd->args[i]);
-            free(cmd->cmd);
-            free(cmd);
-            return (1);
-        }
-        i++;
-    }
-    cmd->argc = i;
-    cmd->args[i] = NULL;
-    mini->cmds = cmd;
-    return (execute_builtin(mini));
+	x = cmds[0].counter++;
+	cmds[x].cmd = args[k];
+	if (i == k)
+	{
+		cmds[x].argc = 0;
+		return (0);
+	}
+	k++;
+	z = 0;
+	while (k < i)
+		cmds[x].args[z++] = args[k++];
+	cmds[x].argc = z;
+	return (1);
+}
+
+int	*parse_to_cmd(t_mini *mini, char **args)
+{
+	t_cmd	*cmds;
+	int		i;
+	int		j;
+
+	cmds = ft_calloc (64, sizeof(t_cmd));
+	if(!cmds)
+		return 0;
+	cmds[0].counter = 0;
+	i = -1;
+	j = 0;
+	while (args[++i])
+	{
+		if (!ft_strcmp(args[i],"|") || !ft_strcmp(args[i],"<") || !ft_strcmp(args[i],">")
+			|| !ft_strcmp(args[i],">>") || !ft_strcmp(args[i],"<<"))
+		{
+			i -= save_command_block(cmds, i, i - j, args);
+			j = -1;
+		}
+		j++;
+	}
+	save_command_block(cmds, i, i - j, args);
+	free(args);
+	mini->cmds = cmds;
+	return 0;
 }
 
 void	check_special_chars(char *input, char *parsed_input, int *i, int *j)
@@ -126,26 +122,31 @@ char	**tokenize_input(char *input)
 	return (args);
 }
 
-
-int check_input(char *input, t_mini *mini)
+void	free_cmd(t_cmd *cmds)
 {
-	char	**args;
+	int	i;
+	int	j;
+
+	i = -1;
+	while (++i <= cmds[0].counter)
+	{
+		free(cmds[i].cmd);
+		j = -1;
+		while (++j < cmds[i].argc)
+			free(cmds[i].args[j]);
+	}
+	free(cmds);
+}
+
+int	check_input(char *input, t_mini *mini)
+{
 	int		ret;
 
-	args = tokenize_input(input);
-	if (!args)
-		return (1);
-	ret = parse_to_cmd(mini, args);
-	if (ret == 0 || ret == 1)
-	{
-		ft_free(args);
-		return (ret);
-	}
-	write(1, "te\n", 3);
-	ret = execute_command(args, mini);
-	ft_free(args);
-	free(mini->cmds);
-	mini->cmds = NULL;
+	ret = 1;
+
+	parse_to_cmd(mini, tokenize_input(input));
+	ret = execute_command(mini);
+	free_cmd(mini->cmds);
 	return (ret);
 }
 
