@@ -38,17 +38,17 @@ int	mini_exit(t_mini *mini)
 	exit(status);
 }
 
-// pamietaj o aktualizacji pwd
 int mini_cd(t_mini *mini)
 {
 	char *path;
+	write(1, "cd2", 2);
 
-	if (mini->cmds->argc > 2)
+	if (mini->cmd_count> 2)
 	{
 		ft_putendl_fd("mini: cd: too many arguments", 2);
 		return (1);
 	}
-	if (mini->cmds->argc == 1)
+	if (mini->cmd_count == 1)
 	{
 		path = get_value(&mini->env_list, "HOME");
 	}
@@ -56,7 +56,7 @@ int mini_cd(t_mini *mini)
 		path = mini->cmds->args[1];
 	if (chdir(path) != 0)
 	{
-		ft_putstr_fd("mini: cd: ", 2);
+		// ft_putstr_fd("mini: cd: ", 2);
 		perror(path);
 		return (1);
 	}
@@ -66,6 +66,7 @@ int mini_cd(t_mini *mini)
 
 int	mini_pwd(t_mini *mini)
 {
+	write(1, "pwd", 3);
 	(void)mini;
 	char *cwd = getcwd(NULL, 0);
 	if (!cwd)

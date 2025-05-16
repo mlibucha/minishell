@@ -1,34 +1,31 @@
 #include "mini.h"
 
-int	save_command_block(t_cmd *cmds, int i, int k, char **args)
+int save_command_block(t_cmd *cmds, int i, int k, char **args)
 {
-	int	x;
-	int	z;
+	int x;
+	int z;
 
 	x = cmds[0].counter++;
-	cmds[x].cmd = args[k];
+	cmds[x].cmd = ft_strdup(args[k]);
 	if (i == k)
 	{
 		cmds[x].argc = 0;
 		return (0);
 	}
-	k++;
 	z = 0;
-	while (k < i)
-		cmds[x].args[z++] = args[k++];
+	while (++k < i)
+		cmds[x].args[z++] = ft_strdup(args[k]);
 	cmds[x].argc = z;
 	return (1);
 }
 
-int	*parse_to_cmd(t_mini *mini, char **args)
+void parse_to_cmd(t_mini *mini, char **args)
 {
 	t_cmd	*cmds;
 	int		i;
 	int		j;
 
-	cmds = ft_calloc (64, sizeof(t_cmd));
-	if(!cmds)
-		return 0;
+	cmds = ft_calloc(64, sizeof(t_cmd));
 	cmds[0].counter = 0;
 	i = -1;
 	j = 0;
@@ -43,9 +40,9 @@ int	*parse_to_cmd(t_mini *mini, char **args)
 		j++;
 	}
 	save_command_block(cmds, i, i - j, args);
+	mini->cmd_count = cmds[0].counter;
 	free(args);
 	mini->cmds = cmds;
-	return 0;
 }
 
 void	check_special_chars(char *input, char *parsed_input, int *i, int *j)
@@ -122,18 +119,21 @@ char	**tokenize_input(char *input)
 	return (args);
 }
 
-void	free_cmd(t_cmd *cmds)
+
+void free_cmd(t_cmd *cmds)
 {
-	int	i;
-	int	j;
+	int i;
+	int j;
 
 	i = -1;
 	while (++i <= cmds[0].counter)
 	{
-		free(cmds[i].cmd);
+		if (cmds[i].cmd)
+			free(cmds[i].cmd);
 		j = -1;
 		while (++j < cmds[i].argc)
-			free(cmds[i].args[j]);
+			if (cmds[i].args[j])
+				free(cmds[i].args[j]);
 	}
 	free(cmds);
 }
@@ -145,6 +145,8 @@ int	check_input(char *input, t_mini *mini)
 	ret = 1;
 
 	parse_to_cmd(mini, tokenize_input(input));
+	execute_builtin(mini);
+	// printf("%s",  mini->cmds[0].args[0]);
 	ret = execute_command(mini);
 	free_cmd(mini->cmds);
 	return (ret);
@@ -160,10 +162,10 @@ int	read_input(t_mini *mini)
 	{
 		input = readline("\033[32mmini> \033[0m");
 		if (!input)
-        {
-            ft_putstr_fd("exit\n", 1);
-            exit(mini->status);
-        }
+		{
+			ft_putstr_fd("exit\n", 1);
+			exit(mini->status);
+		}
 		if (*input)
 		{
 			add_history(input);

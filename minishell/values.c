@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   values.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlibucha <mlibucha@student.42warsaw.pl>    +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:01:16 by e                 #+#    #+#             */
-/*   Updated: 2025/05/16 08:41:26 by mlibucha         ###   ########.fr       */
+/*   Updated: 2025/05/16 08:54:49 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,22 +46,12 @@ void set_values(t_mini *mini)
 
 void free_values(t_mini *mini)
 {
-	int i;
 
 	if (mini->path)
 		free(mini->path);
 	if (mini->cmds)
 	{
-		i = 0;
-		while (i < mini->cmd_count)
-		{
-			free(mini->cmds[i].args);
-			if (mini->cmds[i].input)
-				free(mini->cmds[i].input);
-			if (mini->cmds[i].output)
-				free(mini->cmds[i].output);
-			i++;
-		}
+
 		free(mini->cmds);
 	}
 }

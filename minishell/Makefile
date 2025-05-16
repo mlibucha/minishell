@@ -18,7 +18,7 @@ OBJS = $(SRCS:.c=.o)
 
 # Compiler settings
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -ggdb3
 
 # Readline library flags (adjust paths if needed)
 RL_FLAGS = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include

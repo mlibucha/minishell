@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:56:16 by estolarc          #+#    #+#             */
-/*   Updated: 2025/05/15 11:43:36 by e                ###   ########.fr       */
+/*   Updated: 2025/05/16 14:58:32 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,35 +84,22 @@ void	del_env(t_env **list, char *key)
 	list_del(list, key);
 }
 
-// t_env	*init_envs(char **envp)
-// {
-// 	t_env	*list;
-// 	int		i;
-
-// 	i = -1;
-// 	list = NULL;
-// 	while (envp[++i])
-// 		add_env(&list, split_key(envp[i]), split_value(envp[i]));
-// 	return (list);
-// }
 
 void update_env_array(t_mini *mini)
 {
-    int i;
+	int i;
 
-    i = 0;
-    // Free existing environment array if it exists
-    if (mini->envp)
-    {
-        while (mini->envp[i])
-        {
-            free(mini->envp[i]);
-            i++;
-        }
-        free(mini->envp);
-    }
-    // Create new environment array from the linked list
-    mini->envp = convert_env_list_to_array(mini->env_list);
+	i = 0;
+	if (mini->envp)
+	{
+		while (mini->envp[i])
+		{
+			free(mini->envp[i]);
+			i++;
+		}
+		free(mini->envp);
+	}
+	mini->envp = convert_env_list_to_array(mini->env_list);
 }
 
 t_env *init_envs(char **envp, t_mini mini)
@@ -128,14 +115,14 @@ t_env *init_envs(char **envp, t_mini mini)
 	{
 		key = split_key(envp[i]);
 		value = split_value(envp[i]);
-		if (key && value)  // Only add if both are valid
+		if (key && value)
 		{
 			add_env(&list, key, value, mini);
-			free(key);    // add_env makes copies, so we can free these
+			free(key);
 			free(value);
 		}
 	}
-	mini.envp = convert_env_list_to_array(list);  // Update the envp array
+	mini.envp = convert_env_list_to_array(list);
 	return (list);
 }
 

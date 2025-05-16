@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlibucha <mlibucha@student.42warsaw.pl>    +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/05/16 08:41:58 by mlibucha         ###   ########.fr       */
+/*   Updated: 2025/05/16 10:25:49 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void	set_values(t_mini *mini);
 void	free_values(t_mini *mini);
 int		read_input(t_mini *mini);
 int		execute_command(t_mini *mini);
-int		execute_builtin(t_mini *mini);
 void	update_path(t_mini *mini);
 void	update_env_array(t_mini *mini);
 char	**convert_env_list_to_array(t_env *env_list);
