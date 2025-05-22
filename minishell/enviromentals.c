@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:56:16 by estolarc          #+#    #+#             */
-/*   Updated: 2025/05/16 14:58:32 by e                ###   ########.fr       */
+/*   Updated: 2025/05/22 09:44:02 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ void	add_env(t_env **list, char *key, char *value, t_mini mini)
 		list_add(list, key, value);
 	else
 		swap_value(list, key, value);
-	update_env_array(&mini);
+	if(mini.envp)
+		update_env_array(&mini);
 }
 
 void	del_env(t_env **list, char *key)

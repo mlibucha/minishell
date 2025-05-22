@@ -17,22 +17,22 @@ int	mini_exit(t_mini *mini)
 	int	status;
 
 	status = 0;
-	if (mini->cmds->argc > 2)
+	if (mini->cmds[0]->argc > 2)
 	{
 		ft_putendl_fd("mini: exit: too many arguments", 2);
 		return (1);
 	}
-	if (mini->cmds->argc == 2)
+	if (mini->cmds[0]->argc == 2)
 	{
-		if (!ft_isnumber(mini->cmds->args[1]))
+		if (!ft_isnumber(mini->cmds[0]->args[1]))
 		{
 			ft_putstr_fd("mini: exit: ", 2);
-			ft_putstr_fd(mini->cmds->args[1], 2);
+			ft_putstr_fd(mini->cmds[0]->args[1], 2);
 			ft_putendl_fd(": numeric argument required", 2);
 			status = 2;
 		}
 		else
-			status = ft_atoi(mini->cmds->args[1]);
+			status = ft_atoi(mini->cmds[0]->args[1]);
 	}
 	free_values(mini);
 	exit(status);
@@ -41,7 +41,6 @@ int	mini_exit(t_mini *mini)
 int mini_cd(t_mini *mini)
 {
 	char *path;
-	write(1, "cd2", 2);
 
 	if (mini->cmd_count> 2)
 	{
@@ -53,10 +52,10 @@ int mini_cd(t_mini *mini)
 		path = get_value(&mini->env_list, "HOME");
 	}
 	else
-		path = mini->cmds->args[1];
+		path = mini->cmds[0]->args[1];
 	if (chdir(path) != 0)
 	{
-		// ft_putstr_fd("mini: cd: ", 2);
+		ft_putstr_fd("mini: cd: ", 2);
 		perror(path);
 		return (1);
 	}
@@ -66,7 +65,6 @@ int mini_cd(t_mini *mini)
 
 int	mini_pwd(t_mini *mini)
 {
-	write(1, "pwd", 3);
 	(void)mini;
 	char *cwd = getcwd(NULL, 0);
 	if (!cwd)
@@ -89,15 +87,15 @@ int	mini_echo(t_mini *mini)
 	(void)mini;
 	newline = 1;
 	i = 1;
-	if (mini->cmds->argc > 1 && ft_strncmp(mini->cmds->args[1], "-n", 2) == 0)
+	if (mini->cmds[0]->argc > 1 && ft_strncmp(mini->cmds[0]->args[1], "-n", 2) == 0)
 	{
 		newline = 0;
 		i++;
 	}
-	while (i < mini->cmds->argc)
+	while (i < mini->cmds[0]->argc)
 	{
-		ft_putstr_fd(mini->cmds->args[i], 1);
-		if (i < mini->cmds->argc - 1)
+		ft_putstr_fd(mini->cmds[0]->args[i], 1);
+		if (i < mini->cmds[0]->argc - 1)
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
@@ -108,15 +106,13 @@ int	mini_echo(t_mini *mini)
 
 int	execute_builtin(t_mini *mini)
 {
-	if (mini->cmds->argc == 0)
-		return (-1);
-	if (ft_strncmp(mini->cmds->args[0], "exit", 4) == 0)
+	if (ft_strncmp(mini->cmds[0]->cmd,  "exit", 4) == 0)
 		return (mini_exit(mini));
-	else if (ft_strncmp(mini->cmds->args[0], "cd", 2) == 0)
+	else if (ft_strncmp(mini->cmds[0]->cmd, "cd", 2) == 0)
 		return (mini_cd(mini));
-	else if (ft_strncmp(mini->cmds->args[0], "pwd", 3) == 0)
+	else if (ft_strncmp(mini->cmds[0]->cmd, "pwd", 3) == 0)
 		return (mini_pwd(mini));
-	else if (ft_strncmp(mini->cmds->args[0], "echo", 4) == 0)
+	else if (ft_strncmp(mini->cmds[0]->cmd, "echo", 4) == 0)
 		return (mini_echo(mini));
 	// else if (ft_strncmp(mini->cmds->args[0], "unset", 5) == 0 && (mini->cmds->argc == 2));
 	// 	del_env(mini->env_list, mini->cmds->args[1]);

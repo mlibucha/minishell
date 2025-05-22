@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:01:16 by e                 #+#    #+#             */
-/*   Updated: 2025/05/16 08:54:49 by e                ###   ########.fr       */
+/*   Updated: 2025/05/22 09:46:25 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,14 @@ void update_path(t_mini *mini)
 		ft_putstr_fd("mini: error: cannot get current directory: ", STDERR_FILENO);
 		ft_putendl_fd(strerror(errno), STDERR_FILENO);
 		mini->status = 1;
-		return ;
+		return;
 	}
-		if (mini->path)
+	if (mini->path)
 		free(mini->path);
 	mini->path = ft_strdup(pwd);
 	add_env(&mini->env_list, "PWD", pwd, *mini);
 	free(pwd);
 	mini->status = 0;
-
 }
 
 void set_values(t_mini *mini)
@@ -54,4 +53,65 @@ void free_values(t_mini *mini)
 
 		free(mini->cmds);
 	}
+}
+void free_cmd(t_cmd *cmd)
+{
+	if (!cmd)
+		return;
+	
+	if (cmd->cmd)
+		free(cmd->cmd);
+	
+	if (cmd->args)
+	{
+		int i = 0;
+		while (cmd->args[i])
+		{
+			free(cmd->args[i]);
+			i++;
+		}
+		free(cmd->args);
+	}
+	
+	if (cmd->input_file)
+		free(cmd->input_file);
+	if (cmd->output_file)
+		free(cmd->output_file);
+	if (cmd->heredoc_delim)
+		free(cmd->heredoc_delim);
+}
+void init_cmd(t_cmd *cmd)//conect with set values
+{
+	cmd->cmd = NULL;
+	cmd->args = NULL;
+	cmd->argc = 0;
+	cmd->input_redir = 0;
+	cmd->input_file = NULL;
+	cmd->output_redir = 0;
+	cmd->output_file = NULL;
+	cmd->append = 0;
+	cmd->heredoc = 0;
+	cmd->heredoc_delim = NULL;
+	cmd->pipe_out = 0;
+	cmd->pipe_in = 0;
+}
+
+void free_all_cmds(t_mini *mini)
+{
+    if (!mini || !mini->cmds)
+        return;
+    
+    int i = 0;
+    while (i < mini->cmd_count)
+    {
+        if (mini->cmds[i])
+        {
+            free_cmd(mini->cmds[i]);
+            free(mini->cmds[i]);
+        }
+        i++;
+    }
+    free(mini->cmds);
+    mini->cmds = NULL;
+    mini->cmd_count = 0;
 }
