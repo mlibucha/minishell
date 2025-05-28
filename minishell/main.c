@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:49:54 by e                 #+#    #+#             */
-/*   Updated: 2025/05/19 08:50:48 by e                ###   ########.fr       */
+/*   Updated: 2025/05/27 16:59:46 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int main(int argc, char **argv, char **envp)
 	}
 	set_values(mini);
 	mini->env_list = init_envs(envp, *mini);
+	print_envs(&mini->env_list);
 	read_input(mini);
 	// free_values(mini);
 	free(mini);

@@ -2,10 +2,10 @@
 
 char *ft_strjoin3(char const *s1, char const *s2, char const *s3)
 {
-	char    *str;
-	size_t  len1;
-	size_t  len2;
-	size_t  len3;
+	char	*str;
+	size_t 	len1;
+	size_t 	len2;
+	size_t 	len3;
 
 	if (!s1 || !s2 || !s3)
 		return (NULL);
@@ -24,10 +24,10 @@ char *ft_strjoin3(char const *s1, char const *s2, char const *s3)
 
 char **convert_env_list_to_array(t_env *env_list)
 {
-	t_env   *current;
-	char    **env_array;
-	int     count;
-	int     i;
+	t_env	*current;
+	char	**env_array;
+	int		count;
+	int		i;
 
 	count = 0;
 	current = env_list;
@@ -59,7 +59,6 @@ char **convert_env_list_to_array(t_env *env_list)
 		current = current->next;
 	}
 	env_array[i] = NULL;
-	print_envs(&env_list);
 	return (env_array);
 }
 

@@ -1,49 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_in.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/10 17:01:44 by e                 #+#    #+#             */
+/*   Updated: 2025/05/28 13:11:07 by e                ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini.h"
-
-// int save_command_block(t_cmd *cmds, int i, int k, char **args)
-// {
-// 	int x;
-// 	int z;
-
-// 	x = cmds[0].counter++;
-// 	cmds[x].cmd = ft_strdup(args[k]);
-// 	if (i == k)
-// 	{
-// 		cmds[x].argc = 0;
-// 		return (0);
-// 	}
-// 	z = 0;
-// 	while (++k < i)
-// 		cmds[x].args[z++] = ft_strdup(args[k]);
-// 	cmds[x].argc = z;
-// 	return (1);
-// }
-
-// void parse_to_cmd(t_mini *mini, char **args)
-// {
-// 	t_cmd	*cmds;
-// 	int		i;
-// 	int		j;
-
-// 	cmds = ft_calloc(64, sizeof(t_cmd));
-// 	cmds[0].counter = 0;
-// 	i = -1;
-// 	j = 0;
-// 	while (args[++i])
-// 	{
-// 		if (!ft_strcmp(args[i],"|") || !ft_strcmp(args[i],"<") || !ft_strcmp(args[i],">")
-// 			|| !ft_strcmp(args[i],">>") || !ft_strcmp(args[i],"<<"))
-// 		{
-// 			i -= save_command_block(cmds, i, i - j, args);
-// 			j = -1;
-// 		}
-// 		j++;
-// 	}
-// 	save_command_block(cmds, i, i - j, args);
-// 	mini->cmd_count = cmds[0].counter;
-// 	free(args);
-// 	mini->cmds = cmds;
-// }
 
 void	check_special_chars(char *input, char *parsed_input, int *i, int *j)
 {

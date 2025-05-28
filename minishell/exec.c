@@ -6,32 +6,15 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/05/22 11:50:35 by e                ###   ########.fr       */
+/*   Updated: 2025/05/28 11:35:22 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-// void child_process(t_mini *mini, char *cmd_path)
-// {
-// 		cmd_path = find_command_path((*mini->cmds)->cmd, mini->env_list);
-// 		if (!cmd_path)
-// 		{
-// 			ft_putstr_fd("mini: command not found:\n", 2);
-// 			ft_putendl_fd((*mini->cmds)->cmd, 2);
-// 			exit(127);
-// 		}
-// 		execve(cmd_path, (*mini->cmds)->args, mini->envp);
-// 		perror("mini");
-// 		free(cmd_path);
-// 		exit(EXIT_FAILURE);
-// }
-
-
-
-void exec_single_cmd(t_mini *mini, t_cmd *cmd)
+void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 {
-	char *cmd_path;
+	char	*cmd_path;
 
 	cmd_path = find_command_path(cmd->cmd, mini->env_list);
 	if (!cmd_path)
@@ -47,7 +30,7 @@ void exec_single_cmd(t_mini *mini, t_cmd *cmd)
 	exit(EXIT_FAILURE);
 }
 
-void exec_child_process(t_mini *mini, t_cmd *cmd, int in_fd, int out_fd)
+void	exec_child_process(t_mini *mini, t_cmd *cmd, int in_fd, int out_fd)
 {
 	if (in_fd != STDIN_FILENO)
 	{
@@ -63,13 +46,16 @@ void exec_child_process(t_mini *mini, t_cmd *cmd, int in_fd, int out_fd)
 	exec_single_cmd(mini, cmd);
 }
 
-int execute_command(t_mini *mini)
+int	execute_command(t_mini *mini)
 {
 	pid_t	pid;
 	int		status;
 
+	printf("%d\n", mini->cmd_count);
 	if (mini->cmd_count == 1)
 	{
+		if (mini->cmds[0]->heredoc)
+			handle_heredoc(mini->cmds[0]);
 		pid = fork();
 		if (pid == 0)
 		{

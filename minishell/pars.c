@@ -1,46 +1,46 @@
 #include "mini.h"
 
-// void whiele_loop(t_mini *cmd, int *i, char **args, int end)
-// {
-// 	if (!ft_strcmp(args[i], ">"))
-// 		{
-// 			cmd->output_redir = 1;
-// 			i++;
-// 			if (i < end)
-// 				cmd->output_file = ft_strdup(args[i]);
-// 		}
-// 		else if (!ft_strcmp(args[i], ">>"))
-// 		{
-// 			cmd->output_redir = 1;
-// 			cmd->append = 1;
-// 			i++;
-// 			if (i < end)
-// 				cmd->output_file = ft_strdup(args[i]);
-// 		}
-// 		else if (!ft_strcmp(args[i], "<<"))
-// 		{
-// 			cmd->heredoc = 1;
-// 			i++;
-// 			if (i < end)
-// 				cmd->heredoc_delim = ft_strdup(args[i]);
-// 		}
-// 		else
-// 		{
-// 			if (j == 0)
-// 				cmd->cmd = ft_strdup(args[i]);
-// 			cmd->args[j++] = ft_strdup(args[i]);
-// 		}
-// }
-
-t_cmd *create_cmd(char **args, int start, int end)
+void	input_redir(t_cmd *cmd, char **args, int *i, int end)
 {
-	t_cmd   *cmd;
-	int     i;
-	int     j;
-	
+	cmd->input_redir = true;
+	(*i)++;
+	if (*i < end)
+		cmd->input_file = ft_strdup(args[*i]);
+}
+
+void	output_redir(t_cmd *cmd, char **args, int *i, int end)
+{
+	cmd->output_redir = true;
+	if (!ft_strcmp(args[*i], ">>"))
+		cmd->append = true;
+	(*i)++;
+	if (*i < end)
+	{
+		cmd->output_files[cmd->output_count] = ft_strdup(args[*i]);
+		cmd->output_count++;
+	}
+}
+
+void	heredoc(t_cmd *cmd, char **args, int *i, int end)
+{
+	cmd->heredoc = true;
+	(*i)++;
+	if (*i < end)
+		cmd->heredoc_delim = ft_strdup(args[*i]);
+}
+
+#include "mini.h"
+
+t_cmd	*create_cmd(char **args, int start, int end)
+{
+	t_cmd	*cmd;
+	int		i;
+	int		j;
+
 	cmd = malloc(sizeof(t_cmd));
 	init_cmd(cmd);
 	cmd->args = malloc((end - start + 1) * sizeof(char *));
+	cmd->output_files = malloc((end - start + 1) * sizeof(char *));
 	j = 0;
 	i = start;
 	while (i < end)
@@ -48,41 +48,17 @@ t_cmd *create_cmd(char **args, int start, int end)
 		if (!ft_strcmp(args[i], "|"))
 			cmd->pipe_out = 1;
 		else if (!ft_strcmp(args[i], "<"))
-		{
-			cmd->input_redir = 1;
-			i++;
-			if (i < end)
-				cmd->input_file = ft_strdup(args[i]);
-		}
-		else if (!ft_strcmp(args[i], ">"))
-		{
-			cmd->output_redir = 1;
-			i++;
-			if (i < end)
-				cmd->output_file = ft_strdup(args[i]);
-		}
-		else if (!ft_strcmp(args[i], ">>"))
-		{
-			cmd->output_redir = 1;
-			cmd->append = 1;
-			i++;
-			if (i < end)
-				cmd->output_file = ft_strdup(args[i]);
-		}
+			input_redir(cmd, args, &i, end);
+		else if (!ft_strcmp(args[i], ">") || !ft_strcmp(args[i], ">>"))
+			output_redir(cmd, args, &i, end);
 		else if (!ft_strcmp(args[i], "<<"))
-		{
-			cmd->heredoc = 1;
-			i++;
-			if (i < end)
-				cmd->heredoc_delim = ft_strdup(args[i]);
-		}
+			heredoc(cmd, args, &i, end);
 		else
 		{
 			if (j == 0)
 				cmd->cmd = ft_strdup(args[i]);
 			cmd->args[j++] = ft_strdup(args[i]);
 		}
-		// whiele_loop(cmd, &i, args, end);
 		i++;
 	}
 	cmd->args[j] = NULL;
@@ -90,13 +66,13 @@ t_cmd *create_cmd(char **args, int start, int end)
 	return (cmd);
 }
 
-void parse_to_cmd(t_mini *mini, char **args)
+void	parse_to_cmd(t_mini *mini, char **args)
 {
-	int     i;
-	int     start;
-	int     cmd_count;
-	t_cmd   **cmds;
-	
+	int		i;
+	int		start;
+	int		cmd_count;
+	t_cmd	**cmds;
+
 	cmd_count = 1;
 	i = -1;
 	while (args[++i])
@@ -104,10 +80,10 @@ void parse_to_cmd(t_mini *mini, char **args)
 			cmd_count++;
 	cmds = malloc(cmd_count * sizeof(t_cmd *));
 	if (!cmds)
-		return; // Handle allocation failure
+		return ;
 	start = 0;
 	i = -1;
-	mini->cmd_count = 0; // Initialize cmd_count here
+	mini->cmd_count = 0;
 	while (args[++i])
 	{
 		if (!ft_strcmp(args[i], "|"))
@@ -119,7 +95,7 @@ void parse_to_cmd(t_mini *mini, char **args)
 	cmds[mini->cmd_count++] = create_cmd(args, start, i);
 	i = 0;
 	while (++i < mini->cmd_count)
-		cmds[i]->pipe_in = 1;
+		cmds[i]->pipe_in = true;
 	mini->cmds = cmds;
 	free(args);
 }

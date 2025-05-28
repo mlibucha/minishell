@@ -6,23 +6,23 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:01:16 by e                 #+#    #+#             */
-/*   Updated: 2025/05/22 09:46:25 by e                ###   ########.fr       */
+/*   Updated: 2025/05/28 12:26:45 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-void update_path(t_mini *mini)
+void	update_path(t_mini *mini)
 {
-	char *pwd;
+	char	*pwd;
 
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
 	{
-		ft_putstr_fd("mini: error: cannot get current directory: ", STDERR_FILENO);
+		ft_putstr_fd("mini: error: cannot get current directory: ", 2);
 		ft_putendl_fd(strerror(errno), STDERR_FILENO);
 		mini->status = 1;
-		return;
+		return ;
 	}
 	if (mini->path)
 		free(mini->path);
@@ -32,86 +32,91 @@ void update_path(t_mini *mini)
 	mini->status = 0;
 }
 
-void set_values(t_mini *mini)
+void	set_values(t_mini *mini)
 {
 	mini->envp = NULL;
 	mini->path = NULL;
 	mini->cmds = NULL;
 	mini->cmd_count = 0;
-	mini->pipe_count = 0;
 	mini->status = 0;
 	mini->last_status = 0;
 }
 
-void free_values(t_mini *mini)
+void	free_values(t_mini *mini)
 {
-
 	if (mini->path)
 		free(mini->path);
 	if (mini->cmds)
 	{
-
 		free(mini->cmds);
 	}
 }
-void free_cmd(t_cmd *cmd)
+
+void	free_cmd(t_cmd *cmd)
 {
+	int	i;
+
 	if (!cmd)
-		return;
-	
+		return ;
 	if (cmd->cmd)
 		free(cmd->cmd);
-	
 	if (cmd->args)
 	{
-		int i = 0;
+		i = 0;
 		while (cmd->args[i])
-		{
-			free(cmd->args[i]);
-			i++;
-		}
+			free(cmd->args[i++]);
 		free(cmd->args);
 	}
-	
 	if (cmd->input_file)
 		free(cmd->input_file);
-	if (cmd->output_file)
-		free(cmd->output_file);
-	if (cmd->heredoc_delim)
-		free(cmd->heredoc_delim);
+	if (cmd->output_files)
+	{
+		i = 0;
+		while (i < cmd->output_count)
+			free(cmd->output_files[i++]);
+		free(cmd->output_files);
+	}
+	if (cmd->heredoc && cmd->input_file)
+	{
+		// unlink(cmd->input_file);
+		//free(cmd->input_file);
+	}
 }
-void init_cmd(t_cmd *cmd)//conect with set values
+
+void	init_cmd(t_cmd *cmd)
 {
 	cmd->cmd = NULL;
 	cmd->args = NULL;
 	cmd->argc = 0;
-	cmd->input_redir = 0;
+	cmd->input_redir = false;
 	cmd->input_file = NULL;
-	cmd->output_redir = 0;
-	cmd->output_file = NULL;
-	cmd->append = 0;
-	cmd->heredoc = 0;
+	cmd->output_redir = false;
+	cmd->output_files = NULL;
+	cmd->output_count = 0;
+	cmd->append = false;
+	cmd->heredoc = false;
 	cmd->heredoc_delim = NULL;
 	cmd->pipe_out = 0;
-	cmd->pipe_in = 0;
+	cmd->pipe_in = false;
 }
 
-void free_all_cmds(t_mini *mini)
+void	free_all_cmds(t_mini *mini)
 {
-    if (!mini || !mini->cmds)
-        return;
-    
-    int i = 0;
-    while (i < mini->cmd_count)
-    {
-        if (mini->cmds[i])
-        {
-            free_cmd(mini->cmds[i]);
-            free(mini->cmds[i]);
-        }
-        i++;
-    }
-    free(mini->cmds);
-    mini->cmds = NULL;
-    mini->cmd_count = 0;
+	int	i;
+
+	i = 0;
+	if (!mini || !mini->cmds)
+		return ;
+	while (i < mini->cmd_count)
+	{
+		if (mini->cmds[i])
+		{
+			free_cmd(mini->cmds[i]);
+			free(mini->cmds[i]);
+		}
+		i++;
+	}
+	free(mini->cmds);
+	mini->cmds = NULL;
+	mini->cmd_count = 0;
 }

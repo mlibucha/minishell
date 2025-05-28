@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   linked_list.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:28:01 by estolarc          #+#    #+#             */
-/*   Updated: 2025/05/09 20:06:43 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/05/25 19:04:36 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini.h"
+#include "mini.h"
 
 int	ft_strcmp(const char *s1, const char *s2)
 {

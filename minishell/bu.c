@@ -1,15 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bu.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
+/*   Updated: 2025/05/26 20:16:36 by e                ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini.h"
 
-int ft_isnumber(char *str)
+int	ft_isnumber(char *str)
 {
-	int a = 0;
-	while (str[a])
+	int	a;
+
+	a = -1;
+	while (str[++a])
 	{
-		if(str[a] < '0' || str[a] > '9')
-			return 0;
-		a++;
+		if (str[a] < '0' || str[a] > '9')
+			return (0);
 	}
-	return 1;
+	return (1);
 }
 
 int	mini_exit(t_mini *mini)
@@ -38,19 +51,17 @@ int	mini_exit(t_mini *mini)
 	exit(status);
 }
 
-int mini_cd(t_mini *mini)
+int	mini_cd(t_mini *mini)
 {
-	char *path;
+	char	*path;
 
-	if (mini->cmd_count> 2)
+	if (mini->cmd_count > 2)
 	{
 		ft_putendl_fd("mini: cd: too many arguments", 2);
 		return (1);
 	}
 	if (mini->cmd_count == 1)
-	{
 		path = get_value(&mini->env_list, "HOME");
-	}
 	else
 		path = mini->cmds[0]->args[1];
 	if (chdir(path) != 0)
@@ -65,15 +76,16 @@ int mini_cd(t_mini *mini)
 
 int	mini_pwd(t_mini *mini)
 {
+	char	*cwd;
+
+	cwd = getcwd(NULL, 0);
 	(void)mini;
-	char *cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
 		ft_putstr_fd("mini: pwd: ", 2);
 		perror("");
 		return (1);
 	}
-	
 	ft_putendl_fd(cwd, 1);
 	free(cwd);
 	return (0);
@@ -87,7 +99,8 @@ int	mini_echo(t_mini *mini)
 	(void)mini;
 	newline = 1;
 	i = 1;
-	if (mini->cmds[0]->argc > 1 && ft_strncmp(mini->cmds[0]->args[1], "-n", 2) == 0)
+	if (mini->cmds[0]->argc > 1
+		&& ft_strncmp(mini->cmds[0]->args[1], "-n", 2) == 0)
 	{
 		newline = 0;
 		i++;
@@ -106,7 +119,7 @@ int	mini_echo(t_mini *mini)
 
 int	execute_builtin(t_mini *mini)
 {
-	if (ft_strncmp(mini->cmds[0]->cmd,  "exit", 4) == 0)
+	if (ft_strncmp(mini->cmds[0]->cmd, "exit", 4) == 0)
 		return (mini_exit(mini));
 	else if (ft_strncmp(mini->cmds[0]->cmd, "cd", 2) == 0)
 		return (mini_cd(mini));
