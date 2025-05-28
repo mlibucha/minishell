@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 19:09:20 by e                 #+#    #+#             */
-/*   Updated: 2025/05/28 11:35:05 by e                ###   ########.fr       */
+/*   Updated: 2025/05/28 17:45:17 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,12 @@ int	execute_pipeline(t_mini *mini)
 			create_pipe(pipe_fd);
 		pid = fork();
 		if (pid == 0)
-			exec_child_process(mini, mini->cmds[i], prev_pipe,
-							(i < mini->cmd_count - 1) ? pipe_fd[1] : STDOUT_FILENO);
+		{
+			if (i < mini->cmd_count - 1)
+				exec_child_process(mini, mini->cmds[i], prev_pipe, pipe_fd[1]);
+			else
+				exec_child_process(mini, mini->cmds[i], prev_pipe, STDOUT_FILENO);
+		}		
 		else if (pid < 0)
 			perror("mini: fork");
 		if (prev_pipe != -1)
