@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/05/28 11:36:47 by e                ###   ########.fr       */
+/*   Updated: 2025/05/29 15:39:12 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,19 @@
 
 typedef struct s_cmd
 {
-	char    *cmd;
-	char    **args;
-	int     argc;
-	bool     input_redir;
-	char    *input_file;
-	bool     output_redir;
-	char    **output_files;
-	int     output_count;
-	bool     append;
-	bool  heredoc;
-	char    *heredoc_delim;
-	int     pipe_out;
-	bool     pipe_in;
+	char	*cmd;
+	char	**args;
+	int		argc;
+	bool	input_redir;
+	char	*input_file;
+	bool	output_redir;
+	char	**output_files;
+	int		output_count;
+	bool	append;
+	bool	heredoc;
+	char	*heredoc_delim;
+	int		pipe_out;
+	bool	pipe_in;
 } t_cmd;
 
 typedef struct s_env

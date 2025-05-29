@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/05/28 11:35:22 by e                ###   ########.fr       */
+/*   Updated: 2025/05/29 15:23:32 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ int	execute_command(t_mini *mini)
 	pid_t	pid;
 	int		status;
 
-	printf("%d\n", mini->cmd_count);
 	if (mini->cmd_count == 1)
 	{
 		if (mini->cmds[0]->heredoc)

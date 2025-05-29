@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
-/*   Updated: 2025/05/26 20:16:36 by e                ###   ########.fr       */
+/*   Updated: 2025/05/29 15:38:32 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,17 +119,16 @@ int	mini_echo(t_mini *mini)
 
 int	execute_builtin(t_mini *mini)
 {
-	if (ft_strncmp(mini->cmds[0]->cmd, "exit", 4) == 0)
+	int	a;
+
+	a = mini->cmd_count - 1;
+	if (ft_strncmp(mini->cmds[a]->cmd, "exit", 4) == 0)
 		return (mini_exit(mini));
-	else if (ft_strncmp(mini->cmds[0]->cmd, "cd", 2) == 0)
+	else if (ft_strncmp(mini->cmds[a]->cmd, "cd", 2) == 0)
 		return (mini_cd(mini));
-	else if (ft_strncmp(mini->cmds[0]->cmd, "pwd", 3) == 0)
+	else if (ft_strncmp(mini->cmds[a]->cmd, "pwd", 3) == 0)
 		return (mini_pwd(mini));
-	else if (ft_strncmp(mini->cmds[0]->cmd, "echo", 4) == 0)
+	else if (ft_strncmp(mini->cmds[a]->cmd, "echo", 4) == 0)
 		return (mini_echo(mini));
-	// else if (ft_strncmp(mini->cmds->args[0], "unset", 5) == 0 && (mini->cmds->argc == 2));
-	// 	del_env(mini->env_list, mini->cmds->args[1]);
-	// // else if (ft_strncmp(mini->cmds->args[0], "", 5) == 0 && (mini->cmds->argc == 2));
-	// // 	del_env(mini->env_list, mini->cmds->args[1]);
 	return (-1);
 }
