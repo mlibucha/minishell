@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pars.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/29 17:40:06 by estolarc          #+#    #+#             */
+/*   Updated: 2025/05/29 17:40:08 by estolarc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini.h"
 
 void	input_redir(t_cmd *cmd, char **args, int *i, int end)
@@ -28,8 +40,6 @@ void	heredoc(t_cmd *cmd, char **args, int *i, int end)
 	if (*i < end)
 		cmd->heredoc_delim = ft_strdup(args[*i]);
 }
-
-#include "mini.h"
 
 t_cmd	*create_cmd(char **args, int start, int end)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   enviromentals.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:56:16 by estolarc          #+#    #+#             */
-/*   Updated: 2025/05/22 09:44:02 by e                ###   ########.fr       */
+/*   Updated: 2025/05/29 18:38:56 by estolarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ void	del_env(t_env **list, char *key)
 		return;
 	list_del(list, key);
 }
-
 
 void update_env_array(t_mini *mini)
 {
