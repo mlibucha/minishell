@@ -6,24 +6,11 @@
 /*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
-/*   Updated: 2025/05/29 19:47:03 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/06/02 18:59:55 by estolarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
-
-int	ft_isnumber(char *str)
-{
-	int	a;
-
-	a = -1;
-	while (str[++a])
-	{
-		if (str[a] < '0' || str[a] > '9')
-			return (0);
-	}
-	return (1);
-}
 
 int	mini_unset(t_mini *mini, t_cmd *cmd)
 {
@@ -33,31 +20,6 @@ int	mini_unset(t_mini *mini, t_cmd *cmd)
 	while (cmd->args[++i])
 		del_env(&mini->env_list, cmd->args[i]);
 	return (0);
-}
-
-int	mini_exit(t_cmd *cmd, t_mini *mini, int a)
-{
-	long int	status;
-
-	status = 0;
-	if (a != 0)
-		return (1);
-	if (!ft_isnumber(cmd->args[1]))
-	{
-		ft_putendl_fd("exit", 1);
-		free_values(mini);
-		exit(2);
-	}
-	if (cmd->argc > 2)
-	{
-		ft_putendl_fd("mini: exit: too many arguments", 2);
-		return (1);
-	}
-	ft_putendl_fd("exit", 1);
-	if (cmd->args[1])
-		status = ft_atoi("123");
-	free_values(mini);
-	exit(status);
 }
 
 int	mini_cd(t_cmd *cmd, t_mini *mini)
@@ -86,8 +48,7 @@ int	mini_cd(t_cmd *cmd, t_mini *mini)
 		perror(path);
 		return (1);
 	}
-	update_path(mini);
-	return (0);
+	return (update_path(mini), 0);
 }
 
 int	mini_pwd()
@@ -106,29 +67,23 @@ int	mini_pwd()
 	return (0);
 }
 
-int	mini_echo(t_mini *mini)
+int	mini_echo(t_cmd *cmd)
 {
 	int	i;
-	int	newline;
+	int	option;
 
-	(void)mini;
-	newline = 1;
-	i = 1;
-	if (mini->cmds[0]->argc > 1
-		&& ft_strncmp(mini->cmds[0]->args[1], "-n", 2) == 0)
+	i = 0;
+	option = 0;
+	if (!ft_strcmp(cmd->args[1], "-n"))
 	{
-		newline = 0;
+		option = 1;
 		i++;
 	}
-	while (i < mini->cmds[0]->argc)
-	{
-		ft_putstr_fd(mini->cmds[0]->args[i], 1);
-		if (i < mini->cmds[0]->argc - 1)
-			ft_putchar_fd(' ', 1);
-		i++;
-	}
-	if (newline)
-		ft_putchar_fd('\n', 1);
+	while (++i < cmd->argc - 1)
+		printf("%s ", cmd->args[i]);
+	printf("%s",cmd->args[i]);
+	if (!option)
+		printf("\n");
 	return (0);
 }
 
@@ -144,12 +99,12 @@ int	execute_builtin(t_mini *mini)
 	else if (ft_strcmp(mini->cmds[a]->cmd, "pwd") == 0)
 		return (mini_pwd());
 	else if (ft_strcmp(mini->cmds[a]->cmd, "echo") == 0)
-		return (mini_echo(mini));
+		return (mini_echo(mini->cmds[a]));
 	else if (ft_strcmp(mini->cmds[a]->cmd, "unset") == 0)
 		return (mini_unset(mini, mini->cmds[a]));
 	else if (ft_strcmp(mini->cmds[a]->cmd, "export") == 0)
-		return (mini_echo(mini));
+		return (mini_export(mini->cmds[a], mini));
 	else if (ft_strcmp(mini->cmds[a]->cmd, "env") == 0)
-		return (print_envs(&mini->env_list), 1);
+		return (mini_env(mini->cmds[a], mini));
 	return (-1);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/05/29 15:39:12 by e                ###   ########.fr       */
+/*   Updated: 2025/06/03 19:41:33 by estolarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 # include <stdbool.h>
+# include <limits.h>
+# include <signal.h>
 
 typedef struct s_cmd
 {
@@ -82,6 +84,9 @@ int		execute_builtin(t_mini *mini);
 t_env	*init_envs(char **envp, t_mini mini);
 void	print_envs(t_env **list);
 void	del_env(t_env **list, char *key);
+void	add_env(t_env **list, char *key, char *value, t_mini mini);
+char	*split_value(char *str);
+char	*split_key(char *str);
 int	ft_strcmp(const char *s1, const char *s2);
 void free_cmd(t_cmd *cmds);
 void parse_to_cmd(t_mini *mini, char **args);
@@ -92,4 +97,9 @@ void exec_child_process(t_mini *mini, t_cmd *cmd, int in_fd, int out_fd);
 char *find_command_path(char *cmd, t_env *env_list);
 void setup_redirections(t_cmd *cmd);
 void	handle_heredoc(t_cmd *cmd);
+int	mini_exit(t_cmd *cmd, t_mini *mini, int a);
+int	mini_export(t_cmd *cmd, t_mini *mini);
+int	mini_env(t_cmd *cmd, t_mini *mini);
+void	handler(int signal, siginfo_t *info, void *context);
+
 #endif

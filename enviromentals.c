@@ -6,7 +6,7 @@
 /*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:56:16 by estolarc          #+#    #+#             */
-/*   Updated: 2025/05/29 18:38:56 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:09:22 by estolarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,10 @@ void update_env_array(t_mini *mini)
 
 t_env *init_envs(char **envp, t_mini mini)
 {
-	t_env   *list;
-	int     i;
-	char    *key;
-	char    *value;
+	t_env	*list;
+	int		i;
+	char	*key;
+	char	*value;
 
 	i = -1;
 	list = NULL;

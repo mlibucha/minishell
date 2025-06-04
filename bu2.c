@@ -1,41 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   bu2.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 13:49:54 by e                 #+#    #+#             */
-/*   Updated: 2025/06/03 19:34:52 by estolarc         ###   ########.fr       */
+/*   Created: 2025/06/02 16:11:00 by estolarc          #+#    #+#             */
+/*   Updated: 2025/06/02 18:29:53 by estolarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-int	main(int argc, char **argv, char **envp)
+int	mini_export(t_cmd *cmd, t_mini *mini)
 {
-	struct sigaction	sa;
+	char	*key;
+	char	*value;
+	int		i;
 
-	sa.sa_sigaction = handler;
-	sa.sa_flags = SA_SIGINFO;
-	sigaction(SIGINT, &sa, NULL);
-	signal(SIGQUIT, SIG_IGN);
-	(void)argv;
-	if(argc != 1)
-		return (1);
-	if (envp == NULL)
+	i = 0;
+	while (++i < cmd->argc)
 	{
-		fprintf(stderr, "Error: envp is NULL\n");
+		key = split_key(cmd->args[i]);
+		value = split_value(cmd->args[i]);
+		if (key)
+		{
+			add_env(&mini->env_list, key, value, *mini);
+			free(key);
+			free(value);
+		}
+	}
+	return (0);
+}
+
+int	mini_env(t_cmd *cmd, t_mini *mini)
+{
+	if (cmd->argc > 1)
+	{
+		ft_putendl_fd("mini: env: too many arguments", 2);
 		return (1);
 	}
-	t_mini *mini = malloc(sizeof(t_mini));
-	if (mini == NULL)
-	{
-		perror("malloc");
-		return (1);
-	}
-	set_values(mini);
-	mini->env_list = init_envs(envp, *mini);
-	read_input(mini);
+	print_envs(&mini->env_list);
 	return (0);
 }

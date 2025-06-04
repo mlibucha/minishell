@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   read_in.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 17:01:44 by e                 #+#    #+#             */
-/*   Updated: 2025/05/28 13:11:07 by e                ###   ########.fr       */
+/*   Updated: 2025/06/03 19:44:03 by estolarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ char	**tokenize_input(char *input)
 	return (args);
 }
 
-
 int check_input(char *input, t_mini *mini)
 {
 	int ret;
@@ -108,7 +107,6 @@ int check_input(char *input, t_mini *mini)
 		free_all_cmds(mini);
 		return (ret);
 	}
-	// printf("%s", get_value(&mini->env_list, "TERM"));
 	ret = execute_command(mini);
 	free_all_cmds(mini);
 	return (ret);

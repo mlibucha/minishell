@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/05/29 15:23:32 by e                ###   ########.fr       */
+/*   Updated: 2025/06/02 16:57:34 by estolarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 {
 	char	*cmd_path;
 
+	update_env_array(mini);
 	cmd_path = find_command_path(cmd->cmd, mini->env_list);
 	if (!cmd_path)
 	{
@@ -32,6 +33,8 @@ void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 
 void	exec_child_process(t_mini *mini, t_cmd *cmd, int in_fd, int out_fd)
 {
+	int	ret;
+
 	if (in_fd != STDIN_FILENO)
 	{
 		dup2(in_fd, STDIN_FILENO);
@@ -43,6 +46,9 @@ void	exec_child_process(t_mini *mini, t_cmd *cmd, int in_fd, int out_fd)
 		close(out_fd);
 	}
 	setup_redirections(cmd);
+	ret = execute_builtin(mini);
+	if (ret == 0 || ret == 1)
+		exit (ret);
 	exec_single_cmd(mini, cmd);
 }
 

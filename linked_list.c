@@ -6,7 +6,7 @@
 /*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:28:01 by estolarc          #+#    #+#             */
-/*   Updated: 2025/05/29 16:59:12 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:21:58 by estolarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,12 @@ char	*get_value(t_env **lst, char *key)
 	while (node != NULL)
 	{
 		if (!ft_strcmp(node->key, key))
+		{
+			if (node->value == NULL)
+				return (ft_strdup(""));
 			return (node->value);
+		}
+			
 		node = node->next;
 	}
 	return (NULL);
