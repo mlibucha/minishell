@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/06/02 16:57:34 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/06/05 18:54:48 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,26 +31,6 @@ void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 	exit(EXIT_FAILURE);
 }
 
-void	exec_child_process(t_mini *mini, t_cmd *cmd, int in_fd, int out_fd)
-{
-	int	ret;
-
-	if (in_fd != STDIN_FILENO)
-	{
-		dup2(in_fd, STDIN_FILENO);
-		close(in_fd);
-	}
-	if (out_fd != STDOUT_FILENO)
-	{
-		dup2(out_fd, STDOUT_FILENO);
-		close(out_fd);
-	}
-	setup_redirections(cmd);
-	ret = execute_builtin(mini);
-	if (ret == 0 || ret == 1)
-		exit (ret);
-	exec_single_cmd(mini, cmd);
-}
 
 int	execute_command(t_mini *mini)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   read_in.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 17:01:44 by e                 #+#    #+#             */
-/*   Updated: 2025/06/03 19:44:03 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/06/08 19:22:25 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ char	**tokenize_input(char *input)
 	parsed_input[i + j] = 0;
 	args = ft_split(parsed_input, ' ');
 	free (parsed_input);
+	transform_spaces(args);
 	return (args);
 }
 
@@ -95,6 +96,7 @@ int check_input(char *input, t_mini *mini)
 	ret = 1;
 	mini->cmds = NULL;
 	mini->cmd_count = 0;
+	input = transform_quotes(input, mini->env_list);
 	parse_to_cmd(mini, tokenize_input(input));
 	if (!mini->cmds || mini->cmd_count == 0 || !mini->cmds[0] || !mini->cmds[0]->cmd)
 	{

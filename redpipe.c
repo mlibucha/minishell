@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 19:09:20 by e                 #+#    #+#             */
-/*   Updated: 2025/05/28 17:45:17 by e                ###   ########.fr       */
+/*   Updated: 2025/06/05 16:54:09 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,70 +67,4 @@ void	setup_redirections(t_cmd *cmd)
 	setup_output_redir(cmd);
 }
 
-void	create_pipe(int pipe_fd[2])
-{
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("mini: pipe");
-		exit(EXIT_FAILURE);
-	}
-}
 
-void	connect_pipes(int *prev_pipe, int pipe_fd[2], t_cmd *cmd)
-{
-	if (cmd->pipe_in && prev_pipe)
-		dup2(*prev_pipe, STDIN_FILENO);
-	if (cmd->pipe_out)
-		dup2(pipe_fd[1], STDOUT_FILENO);
-	if (prev_pipe)
-		close(*prev_pipe);
-	if (cmd->pipe_out)
-		close(pipe_fd[1]);
-}
-
-void	wait_for_children(int *status)
-{
-	pid_t	wpid;
-
-	wpid = wait(status);
-	while (wpid > 0)
-		wpid = wait(status);
-}
-
-int	execute_pipeline(t_mini *mini)
-{
-	int		pipe_fd[2];
-	int		prev_pipe;
-	int		status;
-	int		i;
-	pid_t	pid;
-
-	prev_pipe = -1;
-	i = -1;
-	while (++i < mini->cmd_count)
-	{
-		if (i < mini->cmd_count - 1)
-			create_pipe(pipe_fd);
-		pid = fork();
-		if (pid == 0)
-		{
-			if (i < mini->cmd_count - 1)
-				exec_child_process(mini, mini->cmds[i], prev_pipe, pipe_fd[1]);
-			else
-				exec_child_process(mini, mini->cmds[i], prev_pipe, STDOUT_FILENO);
-		}		
-		else if (pid < 0)
-			perror("mini: fork");
-		if (prev_pipe != -1)
-			close(prev_pipe);
-		if (i < mini->cmd_count - 1)
-		{
-			close(pipe_fd[1]);
-			prev_pipe = pipe_fd[0];
-		}
-	}
-	wait_for_children(&status);
-	if (WIFEXITED(status))
-		mini->status = WEXITSTATUS(status);
-	return (mini->status);
-}
