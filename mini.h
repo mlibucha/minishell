@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/08 19:22:57 by e                ###   ########.fr       */
+/*   Updated: 2025/06/09 15:32:58 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ void	parse_to_cmd(t_mini *mini, char **args);
 void	init_cmd(t_cmd *cmd);
 void	free_all_cmds(t_mini *mini);
 int		execute_pipeline(t_mini *mini);
-void	exec_child_process(t_mini *mini, t_cmd *cmd, int in_fd, int out_fd);
 char	*find_command_path(char *cmd, t_env *env_list);
 void	setup_redirections(t_cmd *cmd);
 void	handle_heredoc(t_cmd *cmd);
@@ -106,5 +105,7 @@ void	handler(int signal, siginfo_t *info, void *context);
 void	exec_single_cmd(t_mini *mini, t_cmd *cmd);
 char	*transform_quotes(char *str, t_env *env_list);
 void	transform_spaces(char **args);
-char* find_and_replace(const char* s, const char* ow, const char* nw);
+char	*find_and_replace(const char* s, const char* ow, const char* nw);
+void	expand_env_vars(char **str_ptr, t_env *env_list, char *start, char *end);
+char	*ft_transform_quotes_in_str(char *str, char sign);
 #endif
