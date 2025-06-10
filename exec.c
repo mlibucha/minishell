@@ -6,11 +6,26 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/06/05 18:54:48 by e                ###   ########.fr       */
+/*   Updated: 2025/06/10 20:24:45 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
+
+int is_builtin(char *cmd)
+{
+    if (!cmd)
+        return (0);
+    if (!ft_strcmp(cmd, "echo") ||
+        !ft_strcmp(cmd, "cd") ||
+        !ft_strcmp(cmd, "pwd") ||
+        !ft_strcmp(cmd, "export") ||
+        !ft_strcmp(cmd, "unset") ||
+        !ft_strcmp(cmd, "env") ||
+        !ft_strcmp(cmd, "exit"))
+        return (1);
+    return (0);
+}
 
 void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 {

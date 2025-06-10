@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/09 15:32:58 by e                ###   ########.fr       */
+/*   Updated: 2025/06/10 20:14:20 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,4 +108,6 @@ void	transform_spaces(char **args);
 char	*find_and_replace(const char* s, const char* ow, const char* nw);
 void	expand_env_vars(char **str_ptr, t_env *env_list, char *start, char *end);
 char	*ft_transform_quotes_in_str(char *str, char sign);
+void find_env(char **str, t_env *env_list);
+int is_builtin(char *cmd);
 #endif

@@ -6,207 +6,166 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:21:51 by e                 #+#    #+#             */
-/*   Updated: 2025/06/09 20:03:49 by e                ###   ########.fr       */
+/*   Updated: 2025/06/10 18:23:16 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-
-// static void handle_unquoted_vars(char **str_ptr, t_env *env_list)
-// {
-// 	char *str = *str_ptr;
-// 	size_t pos = 0;
-// 	bool expanded;
-
-// 	if (!str || !env_list)
-// 		return ;
-// 	do
-// 	{
-// 		expanded = false;
-// 		while (str[pos])
-// 		{
-// 			if (str[pos] == '$')
-// 			{
-// 				char *single_quote = ft_strchr(str, '\'');
-// 				if (single_quote && &str[pos] > single_quote &&
-// 					ft_strchr(single_quote + 1, '\''))
-// 				{
-// 					pos++;
-// 					continue ;
-// 				}
-// 				size_t old_pos = pos;
-// 				char *old_str = str;
-// 				int old_len = ft_strlen(str);
-// 				char *var_start = &str[pos];
-// 				char *var_end = var_start + 1;
-// 				while (*var_end && (ft_isalnum(*var_end) || *var_end == '_'))
-// 					var_end++;
-// 				expand_env_vars(str_ptr, env_list, var_start, var_end);
-// 				str = *str_ptr;
-// 				if (str != old_str || ft_strlen(str) != old_len)
-// 				{
-// 					expanded = true;
-// 					pos = 0;
-// 					break ;
-// 				}
-// 				else
-// 					pos = old_pos + 1; 
-// 			}
-// 			else
-// 				pos++;
-// 		}
-// 	}
-// 	while (expanded);
-// }
-
-
-#include "mini.h"
-
-static bool	is_in_single_quotes(char *str, char *pos)
+void find_env(char **str, t_env *env_list)
 {
-	char	*sq_start;
+	t_env	*node;
+	char	*temp;
 
-	sq_start = ft_strchr(str, '\'');
-	return (sq_start && pos > sq_start && ft_strchr(sq_start + 1, '\''));
-}
-
-static char	*find_var_end(char *var_start)
-{
-	char	*var_end;
-
-	var_end = var_start + 1;
-	while (*var_end && (ft_isalnum(*var_end) || *var_end == '_'))
-		var_end++;
-	return (var_end);
-}
-
-static void	process_var_expansion(char **str_ptr, t_env *env_list,
-				size_t *pos, bool *expanded)
-{
-	char	*str;
-	size_t	old_pos;
-	char	*old_str;
-	int		old_len;
-	char	*var_end;
-
-	str = *str_ptr;
-	old_pos = *pos;
-	old_str = str;
-	old_len = ft_strlen(str);
-	var_end = find_var_end(&str[old_pos]);
-	expand_env_vars(str_ptr, env_list, &str[old_pos], var_end);
-	str = *str_ptr;
-	if (str != old_str || (int)ft_strlen(str) != old_len)
+	node = env_list;
+	int i = 0;
+	while (str[i] && str[i][0] == '$')
 	{
-		*expanded = true;
-		*pos = 0;
+		i++;
 	}
-	else
-		*pos = old_pos + 1;
-}
-
-void		handle_unquoted_vars(char **str_ptr, t_env *env_list)
-{
-	char	*str;
-	size_t	pos;
-	bool	expanded;
-
-	if (!*str_ptr || !env_list)
-		return ;
-	str = *str_ptr;
-	pos = 0;
-	expanded = true;
-	while (expanded && str[pos])
+	while (node)
 	{
-		expanded = false;
-		if (str[pos] == '$' && !is_in_single_quotes(str, &str[pos]))
-			process_var_expansion(str_ptr, env_list, &pos, &expanded);
-		else
-			pos++;
-	}
-}
-
-static void handle_single_quotes(char **str_ptr)
-{
-	char *start;
-	char *end;
-	char *str = *str_ptr;
-
-	while ((start = ft_strchr(str, '\'')))
-	{
-		end = ft_strchr(start + 1, '\'');
-		if (!end)
-			break;
-		*start = '\x1E';
-		*end = '\x1E';
-		char *p = start + 1;
-		while (p < end)
+		temp = ft_strjoin("$", node->key);
+		char *new_value = find_and_replace(*str, temp, node->value);
+		if (new_value)
 		{
-			if (*p == ' ')
-				*p = TEMP_SPACE_REPLACEMENT;
-			p++;
+			free(*str);
+			*str = new_value;
 		}
-		str = end + 1;
+		node = node->next;
 	}
 }
 
-static void handle_double_quotes(char **str_ptr, t_env *env_list)
+char ft_find_first_quote(char *str, int i)
 {
-	char *start;
-	char *end;
-	char *str;
+	char first_quote;
 
-	str = *str_ptr;
-	while ((start = ft_strchr(str, '"')))
+	first_quote = '"';
+	while (str[i])
 	{
-		end = ft_strchr(start + 1, '"');
-		if (!end)
-			break;
-		*start = '\x1E';
-		*end = '\x1E';
-		char *p = start + 1;
-		while (p < end)
+		if (str[i] == '"' || str[i] == '\'')
 		{
-			if (*p == ' ')
-				*p = TEMP_SPACE_REPLACEMENT;
-			p++;
+			first_quote = str[i];
+			return (first_quote);
 		}
-		expand_env_vars(str_ptr, env_list, start + 1, end - 1);
-		str = *str_ptr;
-	}
+		i++;
+	}	
+	return (first_quote);
+}
+
+int ft_find_len_quote(char *str, int i)
+{
+	while (str[i])
+	{
+		if (str[i] == '"' || str[i] == '\'')
+		{
+			return (i);
+		}
+		i++;
+	}	
+	return (-1);
+}
+
+int ft_find_sec_quote(char *str, int i, char c)
+{
+	while (str[i])
+	{
+		if (str[i] == c)
+		{
+			return (i);
+		}
+		i++;
+	}	
+	return (-1);
 }
 
 char *transform_quotes(char *str, t_env *env_list)
 {
-	if (!str)
-		return (NULL);
-	printf("Transforming quotes in string: %s\n", str);
-	handle_unquoted_vars(&str, env_list);
-	handle_single_quotes(&str);
-	handle_double_quotes(&str, env_list);
+	char c;
+	int d;
+	int de;
+
+	d = 0;
+	while (str[d] && (ft_strchr(str, '"') || ft_strchr(str, '\'')))
+	{
+		d = ft_find_len_quote(str, d);
+		if (d == -1)
+			break;
+		c = str[d];
+		de = ft_find_sec_quote(str, d + 1, c);
+		if (de == -1)
+			break;
+		while (d <= de && str[d])
+		{
+			if (str[d] == ' ')
+			{
+				str[d] = TEMP_SPACE_REPLACEMENT;
+			}
+			if (str[d] == c)
+			{
+				str[d] = '\x1E';
+			}
+			d++;
+		}
+		printf("transformed string: %s\n", str);
+	}
+	find_env(&str, env_list);
 	return (str);
 }
+
 
 char *ft_transform_quotes_in_str(char *str, char sign)
 {
 	char *new_str;
-	int len = 0;
-	int i = -1;
+	int len;
+	int i;
 
+	len = 0;
+	i = -1;
 	if (!str)
 		return (NULL);
 	while (str[++i])
-		if (str[i] != sign)
+	{
+		if(str[i] != sign)
 			len++;
-	new_str = malloc(len + 1);
+	}
+	new_str = malloc(sizeof(char *) * (len + 1));
 	if (!new_str)
 		return (NULL);
 	len = 0;
 	i = -1;
 	while (str[++i])
+	{
 		if (str[i] != sign)
 			new_str[len++] = str[i];
+	}
 	new_str[len] = '\0';
 	return (new_str);
+}
+
+void transform_spaces(char **args)
+{
+	int i = 0;
+	int j;
+
+	char *trimmed;
+	while (args[i])
+	{
+		j = 0;
+		while (args[i][j])
+		{
+			if (args[i][j] == TEMP_SPACE_REPLACEMENT)
+			{
+				args[i][j] = ' ';
+			}
+			j++;
+		}
+		trimmed = ft_transform_quotes_in_str(args[i], '\x1E');
+		if (trimmed)
+		{
+			free(args[i]);
+			args[i] = trimmed;
+		}
+		i++;
+	}
 }
