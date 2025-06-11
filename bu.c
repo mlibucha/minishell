@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/10 22:26:52 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 13:19:24 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,93 +72,51 @@ int	mini_echo(t_cmd *cmd)
 	int	i;
 	int	option;
 
-	i = 1;
+	i = 0;
 	option = 0;
-	if (cmd->argc > 1 && !ft_strcmp(cmd->args[1], "-n"))
+	if (!ft_strcmp(cmd->args[1], "-n"))
 	{
 		option = 1;
 		i++;
 	}
-	while (i < cmd->argc)
-	{
-		printf("%s", cmd->args[i]);
-		if (i < cmd->argc - 1)
-			printf(" ");
-		i++;
-	}
+	while (++i < cmd->argc - 1)
+		printf("%s ", cmd->args[i]);
+	printf("%s",cmd->args[i]);
 	if (!option)
 		printf("\n");
 	return (0);
 }
 
-
-int	execute_builtin_in_parent(t_mini *mini)
-{
-	int	a;
-	t_cmd	*cmd;
- 	int stdin_backup = -1, stdout_backup = -1;
-    int status = 0;
-
-    // Backup STDIN and STDOUT if redirections are present
-    if (cmd->input_redir || cmd->output_redir)
-    {
-        stdin_backup = dup(STDIN_FILENO);
-        stdout_backup = dup(STDOUT_FILENO);
-        if (stdin_backup < 0 || stdout_backup < 0)
-        {
-            perror("mini: dup");
-            return (1);
-        }
-    }
-	a = mini->cmd_count - 1;
-	cmd = mini->cmds[a];
-	if (ft_strcmp(cmd->cmd, "exit") == 0)
-		return (mini_exit(cmd, mini, a));
-	else if (ft_strcmp(cmd->cmd, "cd") == 0)
-		return (mini_cd(cmd, mini));
-	else if (ft_strcmp(cmd->cmd, "pwd") == 0)
-		return (mini_pwd());
-	else if (ft_strcmp(cmd->cmd, "echo") == 0)
-		return (mini_echo(cmd));
-	else if (ft_strcmp(cmd->cmd, "unset") == 0)
-		return (mini_unset(mini, cmd));
-	else if (ft_strcmp(cmd->cmd, "export") == 0)
-		return (mini_export(cmd, mini));
-	else if (ft_strcmp(cmd->cmd, "env") == 0)
-		return (mini_env(cmd, mini));
-if (stdin_backup != -1)
-    {
-        if (dup2(stdin_backup, STDIN_FILENO) < 0)
-        {
-            perror("mini: dup2 restore stdin");
-            status = 1;
-        }
-        close(stdin_backup);
-    }
-    if (stdout_backup != -1)
-    {
-        if (dup2(stdout_backup, STDOUT_FILENO) < 0)
-        {
-            perror("mini: dup2 restore stdout");
-            status = 1;
-        }
-        close(stdout_backup);
-    }
-
-	return (-1);
-}
 int	execute_builtin(t_mini *mini)
 {
-	int builtin_flag;
-	int last_cmd_index;
+	int	a;
 
-	last_cmd_index = mini->cmd_count - 1;
-	builtin_flag = is_builtin(mini->cmds[last_cmd_index]->cmd);
-	if (!builtin_flag)
-		return (-1);
-	if (mini->cmd_count > 1 || 
-		mini->cmds[last_cmd_index]->input_redir || 
-		mini->cmds[last_cmd_index]->output_redir)
-			return (execute_pipeline(mini));
-	return (execute_builtin_in_parent(mini));
+
+	a = mini->cmd_count - 1;
+	if (ft_strcmp(mini->cmds[a]->cmd, "exit") == 0)
+		return (mini_exit(mini->cmds[a], mini, a));
+	else if (ft_strcmp(mini->cmds[a]->cmd, "cd") == 0)
+		return (mini_cd(mini->cmds[a], mini));
+	else if (ft_strcmp(mini->cmds[a]->cmd, "pwd") == 0)
+		return (mini_pwd());
+	else if (ft_strcmp(mini->cmds[a]->cmd, "echo") == 0)
+		return (mini_echo(mini->cmds[a]));
+	else if (ft_strcmp(mini->cmds[a]->cmd, "unset") == 0)
+		return (mini_unset(mini, mini->cmds[a]));
+	else if (ft_strcmp(mini->cmds[a]->cmd, "export") == 0)
+		return (mini_export(mini->cmds[a], mini));
+	else if (ft_strcmp(mini->cmds[a]->cmd, "env") == 0)
+		return (mini_env(mini->cmds[a], mini));
+	return (write(1, "-1", 2), -1);
 }
+// int	execute_builtin(t_mini *mini)
+// {
+// 	int last_cmd_index;
+
+// 	last_cmd_index = mini->cmd_count - 1;
+// 	if (mini->cmd_count > 1 || 
+// 		mini->cmds[last_cmd_index]->input_redir || 
+// 		mini->cmds[last_cmd_index]->output_redir)
+// 			return (execute_pipeline(mini));
+// 	return (execute_builtin_in_parent(mini));
+// }

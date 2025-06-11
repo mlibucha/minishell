@@ -1,5 +1,6 @@
 {
 	"files.associations": {
 		"mini.h": "c"
-	}
+	},
+	"makefile.configureOnOpen": true
 }
