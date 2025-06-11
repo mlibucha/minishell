@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 14:49:56 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 17:16:55 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ typedef struct s_cmd
 	char	*heredoc_delim;
 	int		pipe_out;
 	bool	pipe_in;
+	// int     output_fd;
+	// int		input_fd;
 } t_cmd;
 
 typedef struct s_env
@@ -111,5 +113,6 @@ void	expand_env_vars(char **str_ptr, t_env *env_list, char *start, char *end);
 char	*ft_transform_quotes_in_str(char *str, char sign);
 void find_env(char **str, t_env *env_list);
 int is_builtin(char *cmd);
-int execute_builtin_in_parent(t_mini *mini);
+void cleanup_redirections(t_cmd *cmd);
+int execute_builtin2(t_cmd *cmd, t_mini *mini, int a);
 #endif

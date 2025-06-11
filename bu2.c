@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bu2.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 16:11:00 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/02 18:29:53 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/06/11 17:16:34 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,36 @@ int	mini_env(t_cmd *cmd, t_mini *mini)
 	}
 	print_envs(&mini->env_list);
 	return (0);
+}
+
+int	execute_builtin(t_mini *mini, int a)
+{
+	int ret = -1;
+	t_cmd *cmd = mini->cmds[a];
+
+	if ((cmd->input_redir || cmd->output_redir )&& is_builtin(cmd->cmd))
+	{
+		pid_t pid = fork();
+		if (pid == 0)
+		{
+			setup_redirections(cmd);
+			ret = execute_builtin2(cmd, mini, a);
+			exit(ret);
+		}
+		else if (pid > 0)
+		{
+			int status;
+			waitpid(pid, &status, 0);
+			if (WIFEXITED(status))
+				ret = WEXITSTATUS(status);
+		}
+		else
+		{
+			perror("fork");
+			ret = 1;
+		}
+	}
+	else
+		ret = execute_builtin2(cmd, mini, a);
+	return ret;
 }

@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 14:49:37 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 17:16:43 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,21 +87,28 @@ int	mini_echo(t_cmd *cmd)
 	return (0);
 }
 
-int	execute_builtin(t_mini *mini, int a)
+
+int execute_builtin2(t_cmd *cmd, t_mini *mini, int a)
 {
-	if (ft_strcmp(mini->cmds[a]->cmd, "exit") == 0)
-		return (mini_exit(mini->cmds[a], mini, a));
-	else if (ft_strcmp(mini->cmds[a]->cmd, "cd") == 0)
-		return (mini_cd(mini->cmds[a], mini));
-	else if (ft_strcmp(mini->cmds[a]->cmd, "pwd") == 0)
-		return (mini_pwd());
-	else if (ft_strcmp(mini->cmds[a]->cmd, "echo") == 0)
-		return (mini_echo(mini->cmds[a]));
-	else if (ft_strcmp(mini->cmds[a]->cmd, "unset") == 0)
-		return (mini_unset(mini, mini->cmds[a]));
-	else if (ft_strcmp(mini->cmds[a]->cmd, "export") == 0)
-		return (mini_export(mini->cmds[a], mini));
-	else if (ft_strcmp(mini->cmds[a]->cmd, "env") == 0)
-		return (mini_env(mini->cmds[a], mini));
-	return (-1);
+    int ret;
+
+    if (ft_strcmp(cmd->cmd, "exit") == 0)
+        ret = mini_exit(cmd, mini, a);
+    else if (ft_strcmp(cmd->cmd, "cd") == 0)
+        ret = mini_cd(cmd, mini);
+    else if (ft_strcmp(cmd->cmd, "pwd") == 0)
+        ret = mini_pwd();
+    else if (ft_strcmp(cmd->cmd, "echo") == 0)
+        ret = mini_echo(cmd);
+    else if (ft_strcmp(cmd->cmd, "unset") == 0)
+        ret = mini_unset(mini, cmd);
+    else if (ft_strcmp(cmd->cmd, "export") == 0)
+        ret = mini_export(cmd, mini);
+    else if (ft_strcmp(cmd->cmd, "env") == 0)
+        ret = mini_env(cmd, mini);
+    else
+        ret = -1;
+    return ret;
 }
+
+
