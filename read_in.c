@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 17:01:44 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 13:22:06 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 14:50:27 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,10 +103,13 @@ int check_input(char *input, t_mini *mini)
 		free_all_cmds(mini);
 		return (0);
 	}
+	mini->cmd_left = mini->cmd_count;
 	if(mini->cmd_count > 1)
 		return(execute_pipeline(mini));
-	ret = execute_builtin(mini);
-	if (ret == 0 || ret == 1)
+	ret = execute_builtin(mini, mini->cmd_count -1 );
+	if(ret != -1)
+		mini->cmd_left--;
+	if (mini->cmd_left == 0)
 	{
 		free_all_cmds(mini);
 		return (ret);

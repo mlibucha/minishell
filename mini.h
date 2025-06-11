@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 12:11:34 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 14:49:56 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct s_mini
 	char	*full_path;
 	t_env	*env_list;
 	char	**envp;
+	int cmd_left;
 } t_mini;
 
 void	set_values(t_mini *mini);
@@ -82,7 +83,7 @@ void	list_add(t_env **lst, char *key, char *value);
 void	swap_value(t_env **lst, char *key, char *value);
 void	destroy_list(t_env **lst);
 char	*get_value(t_env **lst, char *key);
-int		execute_builtin(t_mini *mini);
+int		execute_builtin(t_mini *mini, int a);
 t_env	*init_envs(char **envp, t_mini mini);
 void	print_envs(t_env **list);
 void	del_env(t_env **list, char *key);

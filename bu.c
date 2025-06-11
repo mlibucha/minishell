@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 13:19:24 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 14:49:37 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,8 @@ int	mini_echo(t_cmd *cmd)
 	return (0);
 }
 
-int	execute_builtin(t_mini *mini)
+int	execute_builtin(t_mini *mini, int a)
 {
-	int	a;
-
-
-	a = mini->cmd_count - 1;
 	if (ft_strcmp(mini->cmds[a]->cmd, "exit") == 0)
 		return (mini_exit(mini->cmds[a], mini, a));
 	else if (ft_strcmp(mini->cmds[a]->cmd, "cd") == 0)
@@ -107,16 +103,5 @@ int	execute_builtin(t_mini *mini)
 		return (mini_export(mini->cmds[a], mini));
 	else if (ft_strcmp(mini->cmds[a]->cmd, "env") == 0)
 		return (mini_env(mini->cmds[a], mini));
-	return (write(1, "-1", 2), -1);
+	return (-1);
 }
-// int	execute_builtin(t_mini *mini)
-// {
-// 	int last_cmd_index;
-
-// 	last_cmd_index = mini->cmd_count - 1;
-// 	if (mini->cmd_count > 1 || 
-// 		mini->cmds[last_cmd_index]->input_redir || 
-// 		mini->cmds[last_cmd_index]->output_redir)
-// 			return (execute_pipeline(mini));
-// 	return (execute_builtin_in_parent(mini));
-// }

@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 13:09:24 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 14:06:39 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int	execute_command(t_mini *mini)
 		pid = fork();
 		if (pid == 0)
 		{
+			write(1, "1\n", 2);
 			setup_redirections(mini->cmds[0]);
 			exec_single_cmd(mini, mini->cmds[0]);
 		}

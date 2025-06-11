@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:52:47 by e                 #+#    #+#             */
-/*   Updated: 2025/06/10 20:31:39 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 14:50:52 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void handle_child_process(t_mini *mini, int i, int prev_pipe, int pipe_fd
 		close(pipe_fd[1]);
 	}
 	setup_redirections(mini->cmds[i]);
-	if (execute_builtin(mini) == 0)
+	if (execute_builtin(mini, i) == 0)
 		exit(0);
 	exec_single_cmd(mini, mini->cmds[i]);
 }
