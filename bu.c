@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 17:16:43 by e                ###   ########.fr       */
+/*   Updated: 2025/06/12 19:23:41 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	mini_cd(t_cmd *cmd, t_mini *mini)
 	return (update_path(mini), 0);
 }
 
-int	mini_pwd()
+int	mini_pwd(void)
 {
 	char	*cwd;
 
@@ -81,34 +81,38 @@ int	mini_echo(t_cmd *cmd)
 	}
 	while (++i < cmd->argc - 1)
 		printf("%s ", cmd->args[i]);
-	printf("%s",cmd->args[i]);
+	printf("%s", cmd->args[i]);
 	if (!option)
 		printf("\n");
 	return (0);
 }
 
-
-int execute_builtin2(t_cmd *cmd, t_mini *mini, int a)
+int	execute_builtin2(t_cmd *cmd, t_mini *mini, int a)
 {
-    int ret;
+	int	ret;
 
-    if (ft_strcmp(cmd->cmd, "exit") == 0)
-        ret = mini_exit(cmd, mini, a);
-    else if (ft_strcmp(cmd->cmd, "cd") == 0)
-        ret = mini_cd(cmd, mini);
-    else if (ft_strcmp(cmd->cmd, "pwd") == 0)
-        ret = mini_pwd();
-    else if (ft_strcmp(cmd->cmd, "echo") == 0)
-        ret = mini_echo(cmd);
-    else if (ft_strcmp(cmd->cmd, "unset") == 0)
-        ret = mini_unset(mini, cmd);
-    else if (ft_strcmp(cmd->cmd, "export") == 0)
-        ret = mini_export(cmd, mini);
-    else if (ft_strcmp(cmd->cmd, "env") == 0)
-        ret = mini_env(cmd, mini);
-    else
-        ret = -1;
-    return ret;
+	int	saved_stdin = dup(STDIN_FILENO);
+	int	saved_stdout = dup(STDOUT_FILENO);
+	setup_redirections(cmd);
+	if (ft_strcmp(cmd->cmd, "exit") == 0)
+		ret = mini_exit(cmd, mini, a);
+	else if (ft_strcmp(cmd->cmd, "cd") == 0)
+		ret = mini_cd(cmd, mini);
+	else if (ft_strcmp(cmd->cmd, "pwd") == 0)
+		ret = mini_pwd();
+	else if (ft_strcmp(cmd->cmd, "echo") == 0)
+		ret = mini_echo(cmd);
+	else if (ft_strcmp(cmd->cmd, "unset") == 0)
+		ret = mini_unset(mini, cmd);
+	else if (ft_strcmp(cmd->cmd, "export") == 0)
+		ret = mini_export(cmd, mini);
+	else if (ft_strcmp(cmd->cmd, "env") == 0)
+		ret = mini_env(cmd, mini);
+	else
+		ret = -1;
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+	return (ret);
 }
-
-

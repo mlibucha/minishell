@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 16:49:41 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 18:06:26 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 		ft_putstr_fd(": command not found\n", 2);
 		exit(127);
 	}
-	execve(cmd_path, cmd->args, mini->envp);
+	mini->status = execve(cmd_path, cmd->args, mini->envp);
 	perror("mini: execve");
 	free(cmd_path);
 	exit(EXIT_FAILURE);

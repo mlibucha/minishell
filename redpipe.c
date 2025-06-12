@@ -6,18 +6,19 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 19:09:20 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 16:49:26 by e                ###   ########.fr       */
+/*   Updated: 2025/06/12 19:22:48 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-void	setup_input_redir(t_cmd *cmd)
+int	setup_input_redir(t_cmd *cmd)
 {
 	int	fd;
+	int	saved_stdin = dup(STDIN_FILENO); // Save original stdin
 
 	if (!cmd->input_redir || !cmd->input_file)
-		return ;
+		return 0;
 	if (cmd->heredoc)
 		fd = open(cmd->input_file, O_RDONLY);
 	else
@@ -25,13 +26,16 @@ void	setup_input_redir(t_cmd *cmd)
 	if (fd < 0)
 	{
 		perror("mini: input redirection");
+		close(saved_stdin);
 		exit(EXIT_FAILURE);
 	}
 	dup2(fd, STDIN_FILENO);
 	close(fd);
+	close(saved_stdin); // Close the saved copy
+	return 1;
 }
 
-void	setup_output_redir(t_cmd *cmd)
+int	setup_output_redir(t_cmd *cmd)
 {
 	int		fd;
 	int		flags;
@@ -39,7 +43,7 @@ void	setup_output_redir(t_cmd *cmd)
 	char	*output_file;
 
 	if (!cmd->output_redir || !cmd->output_files || cmd->output_count == 0)
-		return ;
+		return 0;
 	i = -1;
 	while (++i < cmd->output_count)
 	{
@@ -59,13 +63,16 @@ void	setup_output_redir(t_cmd *cmd)
 			dup2(fd, STDOUT_FILENO);
 		close(fd);
 	}
+	return 1;
 }
 
 
-void	setup_redirections(t_cmd *cmd)
+int	setup_redirections(t_cmd *cmd)
 {
-	setup_input_redir(cmd);
-	setup_output_redir(cmd);
+	int set = 0;
+	set += setup_input_redir(cmd);
+	set += setup_output_redir(cmd);
+	return set;
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:21:51 by e                 #+#    #+#             */
-/*   Updated: 2025/06/10 18:23:16 by e                ###   ########.fr       */
+/*   Updated: 2025/06/11 17:38:07 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ char *transform_quotes(char *str, t_env *env_list)
 			}
 			d++;
 		}
-		printf("transformed string: %s\n", str);
 	}
 	find_env(&str, env_list);
 	return (str);

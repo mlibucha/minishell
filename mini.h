@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 17:16:55 by e                ###   ########.fr       */
+/*   Updated: 2025/06/12 19:10:22 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	init_cmd(t_cmd *cmd);
 void	free_all_cmds(t_mini *mini);
 int		execute_pipeline(t_mini *mini);
 char	*find_command_path(char *cmd, t_env *env_list);
-void	setup_redirections(t_cmd *cmd);
+int		setup_redirections(t_cmd *cmd);
 void	handle_heredoc(t_cmd *cmd);
 int		mini_exit(t_cmd *cmd, t_mini *mini, int a);
 int		mini_export(t_cmd *cmd, t_mini *mini);

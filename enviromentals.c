@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:56:16 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/08 20:12:28 by e                ###   ########.fr       */
+/*   Updated: 2025/06/12 11:11:30 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,25 +69,25 @@ char	*split_value(char *str)
 void	add_env(t_env **list, char *key, char *value, t_mini mini)
 {
 	if (key == NULL)
-		return;
+		return ;
 	if (get_value(list, key) == NULL)
 		list_add(list, key, value);
 	else
 		swap_value(list, key, value);
-	if(mini.envp)
+	if (mini.envp)
 		update_env_array(&mini);
 }
 
 void	del_env(t_env **list, char *key)
 {
 	if (list == NULL || key == NULL)
-		return;
+		return ;
 	list_del(list, key);
 }
 
-void update_env_array(t_mini *mini)
+void	update_env_array(t_mini *mini)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (mini->envp)
@@ -102,7 +102,7 @@ void update_env_array(t_mini *mini)
 	mini->envp = convert_env_list_to_array(mini->env_list);
 }
 
-t_env *init_envs(char **envp, t_mini mini)
+t_env	*init_envs(char **envp, t_mini mini)
 {
 	t_env	*list;
 	int		i;

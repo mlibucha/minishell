@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 16:11:00 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/11 17:16:34 by e                ###   ########.fr       */
+/*   Updated: 2025/06/12 19:10:36 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,32 +46,34 @@ int	mini_env(t_cmd *cmd, t_mini *mini)
 
 int	execute_builtin(t_mini *mini, int a)
 {
-	int ret = -1;
-	t_cmd *cmd = mini->cmds[a];
-
-	if ((cmd->input_redir || cmd->output_redir )&& is_builtin(cmd->cmd))
-	{
-		pid_t pid = fork();
-		if (pid == 0)
-		{
-			setup_redirections(cmd);
-			ret = execute_builtin2(cmd, mini, a);
-			exit(ret);
-		}
-		else if (pid > 0)
-		{
-			int status;
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				ret = WEXITSTATUS(status);
-		}
-		else
-		{
-			perror("fork");
-			ret = 1;
-		}
-	}
-	else
+	int ret;
+	t_cmd *cmd;
+	
+	cmd = mini->cmds[a];
+	ret = -1;
+	// if ((cmd->input_redir || cmd->output_redir )&& is_builtin(cmd->cmd))
+	// {
+	// 	pid_t pid = fork();
+	// 	if (pid == 0)
+	// 	{
+	// 		setup_redirections(cmd);
+	// 		ret = execute_builtin2(cmd, mini, a);
+	// 		exit(ret);
+	// 	}
+	// 	else if (pid > 0)
+	// 	{
+	// 		int status;
+	// 		waitpid(pid, &status, 0);
+	// 		if (WIFEXITED(status))
+	// 			ret = WEXITSTATUS(status);
+	// 	}
+	// 	else
+	// 	{
+	// 		perror("fork");
+	// 		ret = 1;
+	// 	}
+	// }
+	// else
 		ret = execute_builtin2(cmd, mini, a);
-	return ret;
+	return (ret);
 }
