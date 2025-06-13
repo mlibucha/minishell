@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 16:06:38 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/02 16:07:09 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/06/13 11:56:52 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,6 @@ int	mini_exit(t_cmd *cmd, t_mini *mini, int a)
 	if (cmd->args[1])
 		status = ft_atol(cmd->args[1]);
 	free_values(mini);
+	// free_all_cmds(mini);
 	exit(status % 256);
 }

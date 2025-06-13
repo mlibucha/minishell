@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 18:06:26 by e                ###   ########.fr       */
+/*   Updated: 2025/06/13 17:26:18 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,16 @@ int is_builtin(char *cmd)
 		return (1);
 	return (0);
 }
+// void process_all_heredocs(t_mini *mini)
+// {
+//     for (int i = 0; i < mini->cmd_count; i++)
+//     {
+//         if (mini->cmds[i]->heredoc)
+//         {
+//             handle_heredoc(mini->cmds[i]);
+//         }
+//     }
+// }
 
 void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 {
@@ -55,7 +65,10 @@ int	execute_command(t_mini *mini)
 	if (mini->cmd_count == 1)
 	{
 		if (mini->cmds[0]->heredoc)
+		{
 			handle_heredoc(mini->cmds[0]);
+			return 1;
+		}
 		pid = fork();
 		if (pid == 0)
 		{

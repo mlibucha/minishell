@@ -5,72 +5,115 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 20:38:25 by e                 #+#    #+#             */
-/*   Updated: 2025/05/28 by helper                ###   ########.fr       */
+/*   Created: 2025/06/13 16:47:08 by e                 #+#    #+#             */
+/*   Updated: 2025/06/13 17:52:50 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
+
 #include "mini.h"
 
-static char	*generate_heredoc_filename(void)
+void display_heredoc_list(t_heredoc *list)
 {
-	static int	counter = 0;
-	char		*num;
-	char		*filename;
+    t_heredoc *current;
 
-	num = ft_itoa(counter++);
-	if (!num)
-		return (NULL);
-	filename = ft_strjoin("/tmp/minishell_heredoc_", num);
-	free(num);
-	return (filename);
+    current = list;
+    while (current)
+    {
+        if (current->content)
+		{
+            ft_putstr_fd(current->content, 1);
+			ft_putstr_fd("\n", 1);
+		}
+        else
+            ft_putstr_fd("(null content)\n", 1);
+        current = current->next;
+    }
 }
 
-static void	read_heredoc_content(int fd, char *delimiter)
+static t_heredoc *create_heredoc_node(char *line)
 {
-	char	*line;
+	t_heredoc *node;
+
+	node = malloc(sizeof(t_heredoc));
+	if (!node)
+		return (NULL);
+	node->content = ft_strdup(line);
+	if (!node->content)
+	{
+		free(node);
+		return (NULL);
+	}
+	node->next = NULL;
+	return (node);
+}
+
+static void add_to_heredoc_list(t_heredoc **list, t_heredoc *new)
+{
+	t_heredoc *current;
+
+	if (!*list)
+	{
+		*list = new;
+		return;
+	}
+	current = *list;
+	while (current->next)
+		current = current->next;
+	current->next = new;
+}
+
+static void read_heredoc_content(t_heredoc **list, char *delimiter)
+{
+	char    *line;
+	char    *trimmed_line;
 
 	while (1)
 	{
-		line = readline("heredoc> ");
-		if (!line)
-		{
-			ft_putstr_fd("mini: warning: here-document delimited by end-of-file\n", 2);
-			break ;
-		}
+		write(0, "> ", 2);
+		line = get_next_line(0);
+		trimmed_line = line;
+		while (*trimmed_line && *trimmed_line != '\n')
+			trimmed_line++;
+		*trimmed_line = '\0';
 		if (ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);
-			break ;
+			break;
 		}
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
+		add_to_heredoc_list(list, create_heredoc_node(line));
 		free(line);
+	}
+	display_heredoc_list(*list);
+}
+
+void handle_heredoc(t_cmd *cmd)
+{
+	t_heredoc *heredoc_list;
+
+	if (!cmd->heredoc || !cmd->heredoc_delim)
+		return;
+	heredoc_list = NULL;
+	cmd->output_redir = true;
+	read_heredoc_content(&heredoc_list, cmd->heredoc_delim);
+	cmd->heredoc_list = heredoc_list;
+	if (cmd->input_file)
+	{
+		free(cmd->input_file);
+		cmd->input_file = NULL;
 	}
 }
 
-void	handle_heredoc(t_cmd *cmd)
+void free_heredoc_list(t_heredoc *list)
 {
-	int		fd;
-	char	*filename;
+	t_heredoc *temp;
 
-	if (!cmd->heredoc || !cmd->heredoc_delim)
-		return ;
-	filename = generate_heredoc_filename();
-	if (!filename)
+	while (list)
 	{
-		perror("mini: heredoc");
-		exit(EXIT_FAILURE);
+		temp = list;
+		list = list->next;
+		free(temp->content);
+		free(temp);
 	}
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd < 0)
-	{
-		free(filename);
-		perror("mini: heredoc");
-		exit(EXIT_FAILURE);
-	}
-	read_heredoc_content(fd, cmd->heredoc_delim);
-	close(fd);
-	cmd->input_redir = true;
-	cmd->input_file = filename;
 }

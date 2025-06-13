@@ -6,13 +6,13 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:21:51 by e                 #+#    #+#             */
-/*   Updated: 2025/06/11 17:38:07 by e                ###   ########.fr       */
+/*   Updated: 2025/06/13 13:15:53 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-void find_env(char **str, t_env *env_list)
+void find_env(char **str, t_env *env_list, int pos)
 {
 	t_env	*node;
 	char	*temp;
@@ -26,7 +26,7 @@ void find_env(char **str, t_env *env_list)
 	while (node)
 	{
 		temp = ft_strjoin("$", node->key);
-		char *new_value = find_and_replace(*str, temp, node->value);
+		char *new_value = find_and_replace(*str, temp, node->value, pos);
 		if (new_value)
 		{
 			free(*str);
@@ -36,31 +36,13 @@ void find_env(char **str, t_env *env_list)
 	}
 }
 
-char ft_find_first_quote(char *str, int i)
-{
-	char first_quote;
-
-	first_quote = '"';
-	while (str[i])
-	{
-		if (str[i] == '"' || str[i] == '\'')
-		{
-			first_quote = str[i];
-			return (first_quote);
-		}
-		i++;
-	}	
-	return (first_quote);
-}
 
 int ft_find_len_quote(char *str, int i)
 {
 	while (str[i])
 	{
 		if (str[i] == '"' || str[i] == '\'')
-		{
 			return (i);
-		}
 		i++;
 	}	
 	return (-1);
@@ -71,9 +53,7 @@ int ft_find_sec_quote(char *str, int i, char c)
 	while (str[i])
 	{
 		if (str[i] == c)
-		{
 			return (i);
-		}
 		i++;
 	}	
 	return (-1);
@@ -97,18 +77,18 @@ char *transform_quotes(char *str, t_env *env_list)
 			break;
 		while (d <= de && str[d])
 		{
+			if(str[d] == '$' && c != '\'')
+			{
+				find_env(&str, env_list, d);
+				de = ft_find_sec_quote(str, d + 1, c);
+			}
 			if (str[d] == ' ')
-			{
 				str[d] = TEMP_SPACE_REPLACEMENT;
-			}
 			if (str[d] == c)
-			{
 				str[d] = '\x1E';
-			}
 			d++;
 		}
 	}
-	find_env(&str, env_list);
 	return (str);
 }
 
@@ -144,19 +124,18 @@ char *ft_transform_quotes_in_str(char *str, char sign)
 
 void transform_spaces(char **args)
 {
-	int i = 0;
+	int i;
 	int j;
 
 	char *trimmed;
+	i = 0;
 	while (args[i])
 	{
 		j = 0;
 		while (args[i][j])
 		{
 			if (args[i][j] == TEMP_SPACE_REPLACEMENT)
-			{
 				args[i][j] = ' ';
-			}
 			j++;
 		}
 		trimmed = ft_transform_quotes_in_str(args[i], '\x1E');

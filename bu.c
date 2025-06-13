@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/12 19:23:41 by e                ###   ########.fr       */
+/*   Updated: 2025/06/13 11:55:19 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,11 @@ int	mini_echo(t_cmd *cmd)
 int	execute_builtin2(t_cmd *cmd, t_mini *mini, int a)
 {
 	int	ret;
+	int	saved_stdin;
+	int	saved_stdout;
 
-	int	saved_stdin = dup(STDIN_FILENO);
-	int	saved_stdout = dup(STDOUT_FILENO);
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
 	setup_redirections(cmd);
 	if (ft_strcmp(cmd->cmd, "exit") == 0)
 		ret = mini_exit(cmd, mini, a);
@@ -112,7 +114,5 @@ int	execute_builtin2(t_cmd *cmd, t_mini *mini, int a)
 		ret = -1;
 	dup2(saved_stdin, STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
-	return (ret);
+	return (close(saved_stdin), close(saved_stdout), ret);
 }

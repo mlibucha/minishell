@@ -6,23 +6,28 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 19:09:20 by e                 #+#    #+#             */
-/*   Updated: 2025/06/12 19:22:48 by e                ###   ########.fr       */
+/*   Updated: 2025/06/13 17:54:46 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-int	setup_input_redir(t_cmd *cmd)
+int setup_input_redir(t_cmd *cmd)
 {
-	int	fd;
-	int	saved_stdin = dup(STDIN_FILENO); // Save original stdin
+	int fd;
+	int saved_stdin = dup(STDIN_FILENO);
 
 	if (!cmd->input_redir || !cmd->input_file)
 		return 0;
+		
 	if (cmd->heredoc)
+	{
 		fd = open(cmd->input_file, O_RDONLY);
+		unlink(cmd->input_file);
+	}
 	else
 		fd = open(cmd->input_file, O_RDONLY);
+		
 	if (fd < 0)
 	{
 		perror("mini: input redirection");
@@ -31,7 +36,7 @@ int	setup_input_redir(t_cmd *cmd)
 	}
 	dup2(fd, STDIN_FILENO);
 	close(fd);
-	close(saved_stdin); // Close the saved copy
+	close(saved_stdin);
 	return 1;
 }
 
@@ -66,13 +71,9 @@ int	setup_output_redir(t_cmd *cmd)
 	return 1;
 }
 
-
 int	setup_redirections(t_cmd *cmd)
 {
-	int set = 0;
-	set += setup_input_redir(cmd);
-	set += setup_output_redir(cmd);
-	return set;
+	setup_input_redir(cmd);
+	setup_output_redir(cmd);
+	return 0;
 }
-
-

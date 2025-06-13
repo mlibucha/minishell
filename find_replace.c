@@ -6,52 +6,87 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:58:19 by e                 #+#    #+#             */
-/*   Updated: 2025/06/10 20:14:14 by e                ###   ########.fr       */
+/*   Updated: 2025/06/13 12:19:35 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-static int	count_occurrences(const char *s, const char *ow)
-{
-	char	*p;
-	int		cnt;
-	int		i;
 
-	cnt = 0;
-	i = 0;
-	while ((p = strstr(s + i, ow)))
-	{
-		cnt++;
-		i = p - s + strlen(ow);
-	}
-	return (cnt);
+static int is_valid_env_char(char c)
+{
+	return (ft_isalnum(c) || c == '_');
 }
 
-char	*find_and_replace(const char *s, const char *ow, const char *nw)
+static int find_suffix_end(const char *s, int pos, int var_len, int s_len)
 {
-	char	*r;
-	int		i;
-	int		ow_len;
-	int		nw_len;
+	int suffix_end;
 
-	ow_len = strlen(ow);
-	nw_len = strlen(nw);
-	r = malloc(strlen(s) + count_occurrences(s, ow) * (nw_len - ow_len) + 1);
+	suffix_end = pos + var_len;
+	while (suffix_end < s_len && is_valid_env_char(s[suffix_end]))
+		suffix_end++;
+	return suffix_end;
+}
+
+static char *handle_empty_replacement(const char *s, int pos, int suffix_end, int s_len)
+{
+	int new_len;
+	int remaining;
+
+	new_len = s_len - (suffix_end - pos);
+	char *r = malloc(new_len + 1);
 	if (!r)
-		return (NULL);
-	i = 0;
-	while (*s)
-	{
-		if (ft_strnstr(s, ow, ft_strlen(ow)) == s)
-		{
-			ft_strlcpy(r + i, nw, nw_len + 1);
-			i += nw_len;
-			s += ow_len;
-		}
-		else
-			r[i++] = *s++;
-	}
-	r[i] = '\0';
-	return (r);
+		return NULL;
+	if (pos > 0)
+		ft_memcpy(r, s, pos);
+	remaining = s_len - suffix_end;
+	if (remaining > 0)
+		ft_memcpy(r + pos, s + suffix_end, remaining);
+	r[pos + remaining] = '\0';
+	return r;
 }
+
+static char *handle_normal_replacement(const char *s, const char *val, int pos, int var_len, int s_len, int val_len)
+{
+	int new_len;
+	int remaining;
+
+	new_len = s_len - var_len + val_len;
+	if (new_len < 0)
+		return ft_strdup(s);
+	char *r = malloc(new_len + 1);
+	if (!r)
+		return NULL;
+	if (pos > 0)
+		ft_memcpy(r, s, pos);
+	ft_memcpy(r + pos, val, val_len);
+	remaining = s_len - (pos + var_len);
+	if (remaining > 0)
+		ft_memcpy(r + pos + val_len, s + pos + var_len, remaining);
+	r[new_len] = '\0';
+	return r;
+}
+
+char *find_and_replace(const char *s, const char *var, const char *val, int pos)
+{
+	int s_len;
+	int var_len;
+	int val_len;
+	if (!s || !var || !val)
+		return NULL;
+
+	s_len = ft_strlen(s);
+	var_len = ft_strlen(var);
+	val_len = ft_strlen(val);
+	if (pos < 0 || pos >= s_len)
+		return ft_strdup(s);
+	if (ft_strncmp(s + pos, var, var_len) != 0)
+		return ft_strdup(s);
+	if (pos + var_len < s_len && is_valid_env_char(s[pos + var_len]))
+	{
+		int suffix_end = find_suffix_end(s, pos, var_len, s_len);
+		return handle_empty_replacement(s, pos, suffix_end, s_len);
+	}
+	return handle_normal_replacement(s, val, pos, var_len, s_len, val_len);
+}
+
