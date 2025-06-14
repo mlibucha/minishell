@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:21:51 by e                 #+#    #+#             */
-/*   Updated: 2025/06/13 13:15:53 by e                ###   ########.fr       */
+/*   Updated: 2025/06/14 16:41:33 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,6 @@ void find_env(char **str, t_env *env_list, int pos)
 	char	*temp;
 
 	node = env_list;
-	int i = 0;
-	while (str[i] && str[i][0] == '$')
-	{
-		i++;
-	}
 	while (node)
 	{
 		temp = ft_strjoin("$", node->key);
@@ -86,9 +81,16 @@ char *transform_quotes(char *str, t_env *env_list)
 				str[d] = TEMP_SPACE_REPLACEMENT;
 			if (str[d] == c)
 				str[d] = '\x1E';
+			if (str[d] == '|')
+				str[d] = '\x1D';
+			if (str[d] == '>')
+				str[d] = '\x1C';
+			if (str[d] == '<')
+				str[d] = '\x02';
 			d++;
 		}
 	}
+	find_env(&str, env_list, 0);
 	return (str);
 }
 
@@ -136,6 +138,12 @@ void transform_spaces(char **args)
 		{
 			if (args[i][j] == TEMP_SPACE_REPLACEMENT)
 				args[i][j] = ' ';
+			if (args[i][j] == '\x1D')
+				args[i][j] = '|';
+			if (args[i][j] == '\x1C')
+				args[i][j] = '>';
+			if (args[i][j] == '\x02')
+				args[i][j] = '<';
 			j++;
 		}
 		trimmed = ft_transform_quotes_in_str(args[i], '\x1E');

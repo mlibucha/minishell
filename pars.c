@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:40:06 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/11 16:49:46 by e                ###   ########.fr       */
+/*   Updated: 2025/06/14 12:43:41 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	heredoc(t_cmd *cmd, char **args, int *i, int end)
 	(*i)++;
 	if (*i < end)
 		cmd->heredoc_delim = ft_strdup(args[*i]);
+	cmd->output_count++;
 }
 
 t_cmd	*create_cmd(char **args, int start, int end)

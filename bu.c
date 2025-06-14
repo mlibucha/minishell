@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/13 11:55:19 by e                ###   ########.fr       */
+/*   Updated: 2025/06/14 16:45:54 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,10 @@ int	mini_cd(t_cmd *cmd, t_mini *mini)
 {
 	char	*path;
 
+	if(mini->cmd_count != 1)
+		return (0);
 	if (cmd->argc > 2)
-	{
-		ft_putendl_fd("mini: cd: too many arguments", 2);
-		return (1);
-	}
+		return (ft_putendl_fd("mini: cd: too many arguments", 2), 1);
 	if (cmd->argc == 1)
 	{
 		path = get_value(&mini->env_list, "HOME");
@@ -96,9 +95,10 @@ int	execute_builtin2(t_cmd *cmd, t_mini *mini, int a)
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);
 	setup_redirections(cmd);
+	ret = -1;
 	if (ft_strcmp(cmd->cmd, "exit") == 0)
 		ret = mini_exit(cmd, mini, a);
-	else if (ft_strcmp(cmd->cmd, "cd") == 0)
+	else if ((ft_strcmp(cmd->cmd, "cd") == 0 ))
 		ret = mini_cd(cmd, mini);
 	else if (ft_strcmp(cmd->cmd, "pwd") == 0)
 		ret = mini_pwd();
@@ -110,8 +110,6 @@ int	execute_builtin2(t_cmd *cmd, t_mini *mini, int a)
 		ret = mini_export(cmd, mini);
 	else if (ft_strcmp(cmd->cmd, "env") == 0)
 		ret = mini_env(cmd, mini);
-	else
-		ret = -1;
 	dup2(saved_stdin, STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
 	return (close(saved_stdin), close(saved_stdout), ret);

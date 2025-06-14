@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:01:16 by e                 #+#    #+#             */
-/*   Updated: 2025/06/13 16:47:05 by e                ###   ########.fr       */
+/*   Updated: 2025/06/14 16:49:03 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void    free_cmd(t_cmd *cmd)
     }
     if (cmd->heredoc_delim)
         free(cmd->heredoc_delim);
-    if (cmd->heredoc_list) // Changed from heredoc to heredoc_list
+    if (cmd->heredoc_list)
         free_heredoc_list(cmd->heredoc_list);
 }
 
@@ -98,7 +98,7 @@ void    init_cmd(t_cmd *cmd)
     cmd->heredoc_delim = NULL;
     cmd->pipe_out = 0;
     cmd->pipe_in = false;
-    cmd->heredoc_list = NULL; // Initialize heredoc linked list to NULL
+    cmd->heredoc_list = NULL;
 }
 
 void    free_all_cmds(t_mini *mini)

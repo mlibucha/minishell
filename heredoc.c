@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 16:47:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/13 17:52:50 by e                ###   ########.fr       */
+/*   Updated: 2025/06/14 13:16:30 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,21 +88,24 @@ static void read_heredoc_content(t_heredoc **list, char *delimiter)
 	display_heredoc_list(*list);
 }
 
-void handle_heredoc(t_cmd *cmd)
+int handle_heredoc(t_cmd *cmd)
 {
 	t_heredoc *heredoc_list;
 
 	if (!cmd->heredoc || !cmd->heredoc_delim)
-		return;
+		return 0;
 	heredoc_list = NULL;
-	cmd->output_redir = true;
 	read_heredoc_content(&heredoc_list, cmd->heredoc_delim);
+	//cmd->output_redir = true;
 	cmd->heredoc_list = heredoc_list;
+	//cmd->output_count = 1;
 	if (cmd->input_file)
 	{
+		write(1, "huj", 3);
 		free(cmd->input_file);
 		cmd->input_file = NULL;
 	}
+	return 1;
 }
 
 void free_heredoc_list(t_heredoc *list)

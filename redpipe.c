@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 19:09:20 by e                 #+#    #+#             */
-/*   Updated: 2025/06/13 17:54:46 by e                ###   ########.fr       */
+/*   Updated: 2025/06/14 13:13:46 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,12 @@
 int setup_input_redir(t_cmd *cmd)
 {
 	int fd;
-	int saved_stdin = dup(STDIN_FILENO);
+	int saved_stdin;
 
 	if (!cmd->input_redir || !cmd->input_file)
 		return 0;
-		
-	if (cmd->heredoc)
-	{
-		fd = open(cmd->input_file, O_RDONLY);
-		unlink(cmd->input_file);
-	}
-	else
-		fd = open(cmd->input_file, O_RDONLY);
-		
+	saved_stdin = dup(STDIN_FILENO);
+	fd = open(cmd->input_file, O_RDONLY);
 	if (fd < 0)
 	{
 		perror("mini: input redirection");
