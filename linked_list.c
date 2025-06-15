@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   linked_list.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estolarc <estolarc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:28:01 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/02 17:21:58 by estolarc         ###   ########.fr       */
+/*   Updated: 2025/06/15 21:21:01 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,26 @@ void	swap_value(t_env **lst, char *key, char *value)
 		}
 		node = node->next;
 	}
+}
+
+void	free_env_list(t_env **lst)
+{
+	t_env	*current;
+	t_env	*next;
+
+	if (!lst || !*lst)
+		return;
+	
+	current = *lst;
+	while (current != NULL)
+	{
+		next = current->next;
+		free(current->key);
+		free(current->value);
+		free(current);
+		current = next;
+	}
+	*lst = NULL;
 }
 
 void	list_add(t_env **lst, char *key, char *value)

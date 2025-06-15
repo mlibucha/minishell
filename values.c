@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:01:16 by e                 #+#    #+#             */
-/*   Updated: 2025/06/15 17:20:47 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 19:23:38 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void free_values(t_mini *mini)
 		destroy_list(&mini->env_list);
 		mini->env_list = NULL;
 	}
+	free_env_list(&mini->env_list);
 }
 
 void    free_cmd(t_cmd *cmd)
@@ -166,8 +167,8 @@ void    free_all_cmds(t_mini *mini)
 		}
 		i++;
 	}
-	// if(mini->envp)
-	// 	free_env_array(mini->envp);
+	if(mini->envp)
+		free_env_array(mini->envp);
 	free(mini->cmds);
 	mini->cmds = NULL;
 	mini->cmd_count = 0;

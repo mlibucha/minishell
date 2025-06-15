@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 16:47:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/15 13:56:33 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 19:33:35 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ static void read_heredoc_content(t_heredoc **list, char **delimiters, int delim_
 {
 	char *line;
 	int current_delim;
+	char *trimmed_line;
 
 	current_delim = 0;
 	while (current_delim < delim_count)
@@ -75,8 +76,8 @@ static void read_heredoc_content(t_heredoc **list, char **delimiters, int delim_
 		write(0, "> ", 2);
 		line = get_next_line(0);
 		if (!line)
-			break;
-		char *trimmed_line = line;
+			return ;
+		trimmed_line = line;
 		while (*trimmed_line && *trimmed_line != '\n')
 			trimmed_line++;
 		*trimmed_line = '\0';

@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/15 16:37:38 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 19:14:09 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,4 +120,5 @@ int     is_builtin(char *cmd);
 int     execute_builtin2(t_cmd *cmd, t_mini *mini, int a);
 void	free_env_array(char **env_array);
 void    free_heredoc_list(t_heredoc *list);
+void	free_env_list(t_env **lst);
 #endif

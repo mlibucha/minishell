@@ -6,26 +6,11 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/06/14 20:29:20 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 19:24:28 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
-
-int is_builtin(char *cmd)
-{
-	if (!cmd)
-		return (0);
-	if (!ft_strcmp(cmd, "echo") ||
-		!ft_strcmp(cmd, "cd") ||
-		!ft_strcmp(cmd, "pwd") ||
-		!ft_strcmp(cmd, "export") ||
-		!ft_strcmp(cmd, "unset") ||
-		!ft_strcmp(cmd, "env") ||
-		!ft_strcmp(cmd, "exit"))
-		return (1);
-	return (0);
-}
 
 void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 {
@@ -38,12 +23,13 @@ void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 		ft_putstr_fd("mini: ", 2);
 		ft_putstr_fd(cmd->cmd, 2);
 		ft_putstr_fd(": command not found\n", 2);
+		free_all_cmds(mini);
 		exit(127);
 	}
-	mini->status = execve(cmd_path, cmd->args, mini->envp);
+	execve(cmd_path, cmd->args, mini->envp);
+	free_all_cmds(mini);
 	perror("mini: execve");
 	free(cmd_path);
-	exit(EXIT_FAILURE);
 }
 
 

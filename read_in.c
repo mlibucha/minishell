@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 17:01:44 by e                 #+#    #+#             */
-/*   Updated: 2025/06/15 17:26:41 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 21:26:44 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int	read_input(t_mini *mini)
 			ft_putstr_fd("exit\n", 1);
 			free_all_cmds(mini);
 			free_values(mini);
-			exit(mini->status);
+			mini_exit(mini->cmds);
 		}
 		if (*input)
 		{
