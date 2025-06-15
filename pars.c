@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:40:06 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/14 12:43:41 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 15:16:21 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,20 @@ void	output_redir(t_cmd *cmd, char **args, int *i, int end)
 	}
 }
 
-void	heredoc(t_cmd *cmd, char **args, int *i, int end)
+void heredoc(t_cmd *cmd, char **args, int *i, int end)
 {
 	cmd->heredoc = true;
 	(*i)++;
 	if (*i < end)
-		cmd->heredoc_delim = ft_strdup(args[*i]);
-	cmd->output_count++;
+	{
+		char **new_delims = realloc(cmd->heredoc_delim, 
+								  (cmd->heredoc_count + 1) * sizeof(char *));
+		if (!new_delims)
+			return;
+		cmd->heredoc_delim = new_delims;
+		cmd->heredoc_delim[cmd->heredoc_count] = ft_strdup(args[*i]);
+		cmd->heredoc_count++;
+	}
 }
 
 t_cmd	*create_cmd(char **args, int start, int end)

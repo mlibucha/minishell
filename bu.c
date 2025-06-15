@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 18:59:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/14 16:45:54 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 15:18:01 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	mini_cd(t_cmd *cmd, t_mini *mini)
 {
 	char	*path;
 
-	if(mini->cmd_count != 1)
+	if (mini->cmd_count != 1)
 		return (0);
 	if (cmd->argc > 2)
 		return (ft_putendl_fd("mini: cd: too many arguments", 2), 1);
@@ -78,9 +78,9 @@ int	mini_echo(t_cmd *cmd)
 		option = 1;
 		i++;
 	}
-	while (++i < cmd->argc - 1)
-		printf("%s ", cmd->args[i]);
-	printf("%s", cmd->args[i]);
+	while (++i < cmd->argc)
+		if (cmd->args[i])
+			printf("%s ", cmd->args[i]);
 	if (!option)
 		printf("\n");
 	return (0);
@@ -98,7 +98,7 @@ int	execute_builtin2(t_cmd *cmd, t_mini *mini, int a)
 	ret = -1;
 	if (ft_strcmp(cmd->cmd, "exit") == 0)
 		ret = mini_exit(cmd, mini, a);
-	else if ((ft_strcmp(cmd->cmd, "cd") == 0 ))
+	else if (ft_strcmp(cmd->cmd, "cd") == 0)
 		ret = mini_cd(cmd, mini);
 	else if (ft_strcmp(cmd->cmd, "pwd") == 0)
 		ret = mini_pwd();

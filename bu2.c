@@ -6,13 +6,13 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 16:11:00 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/14 16:44:26 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 15:19:44 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-char **ft_arraydup(char **array)
+char	**ft_arraydup(char **array)
 {
 	int		count;
 	char	**copy;
@@ -40,6 +40,7 @@ char **ft_arraydup(char **array)
 	copy[count] = NULL;
 	return (copy);
 }
+
 void	ft_sort_array(char **array)
 {
 	int		i;
@@ -119,34 +120,11 @@ int	mini_env(t_cmd *cmd, t_mini *mini)
 
 int	execute_builtin(t_mini *mini, int a)
 {
-	int ret;
-	t_cmd *cmd;
-	
+	int		ret;
+	t_cmd	*cmd;
+
 	cmd = mini->cmds[a];
 	ret = -1;
-	// if ((cmd->input_redir || cmd->output_redir )&& is_builtin(cmd->cmd))
-	// {
-	// 	pid_t pid = fork();
-	// 	if (pid == 0)
-	// 	{
-	// 		setup_redirections(cmd);
-	// 		ret = execute_builtin2(cmd, mini, a);
-	// 		exit(ret);
-	// 	}
-	// 	else if (pid > 0)
-	// 	{
-	// 		int status;
-	// 		waitpid(pid, &status, 0);
-	// 		if (WIFEXITED(status))
-	// 			ret = WEXITSTATUS(status);
-	// 	}
-	// 	else
-	// 	{
-	// 		perror("fork");
-	// 		ret = 1;
-	// 	}
-	// }
-	// else
-		ret = execute_builtin2(cmd, mini, a);
+	ret = execute_builtin2(cmd, mini, a);
 	return (ret);
 }

@@ -6,12 +6,11 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:58:19 by e                 #+#    #+#             */
-/*   Updated: 2025/06/13 12:19:35 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 17:33:57 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
-
 
 static int is_valid_env_char(char c)
 {
@@ -72,16 +71,16 @@ char *find_and_replace(const char *s, const char *var, const char *val, int pos)
 	int s_len;
 	int var_len;
 	int val_len;
-	if (!s || !var || !val)
-		return NULL;
 
+	if (!s || !var || !val)
+		return (NULL);
 	s_len = ft_strlen(s);
 	var_len = ft_strlen(var);
 	val_len = ft_strlen(val);
 	if (pos < 0 || pos >= s_len)
-		return ft_strdup(s);
+		return (ft_strdup(s));
 	if (ft_strncmp(s + pos, var, var_len) != 0)
-		return ft_strdup(s);
+		return (ft_strdup(s));
 	if (pos + var_len < s_len && is_valid_env_char(s[pos + var_len]))
 	{
 		int suffix_end = find_suffix_end(s, pos, var_len, s_len);

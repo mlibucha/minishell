@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/14 16:24:38 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 16:37:38 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ typedef struct s_cmd
 	int     output_count;
 	bool    append;
 	bool    heredoc;
-	char    *heredoc_delim;
+	char    **heredoc_delim;
 	int     pipe_out;
 	bool    pipe_in;
 	t_heredoc *heredoc_list;
-	int     heredoc_pipe[2]; 
+	int     heredoc_count;
 } t_cmd;
 
 typedef struct s_env
@@ -91,7 +91,7 @@ void    swap_value(t_env **lst, char *key, char *value);
 void    destroy_list(t_env **lst);
 char    *get_value(t_env **lst, char *key);
 int     execute_builtin(t_mini *mini, int a);
-t_env   *init_envs(char **envp, t_mini mini);
+t_env   *init_envs(char **envp, t_mini *mini);
 void    print_envs(t_env **list);
 void    del_env(t_env **list, char *key);
 void    add_env(t_env **list, char *key, char *value, t_mini mini);
@@ -111,12 +111,13 @@ int     mini_export(t_cmd *cmd, t_mini *mini);
 int     mini_env(t_cmd *cmd, t_mini *mini);
 void    handler(int signal, siginfo_t *info, void *context);
 void    exec_single_cmd(t_mini *mini, t_cmd *cmd);
-char    *transform_quotes(char *str, t_env *env_list);
+char    *transform_quotes(char *str, t_mini mini);
 void    transform_spaces(char **args);
 char    *find_and_replace(const char* s, const char* ow, const char* nw, int pos);
 char    *ft_transform_quotes_in_str(char *str, char sign);
 void    find_env(char **str, t_env *env_list, int pos);
 int     is_builtin(char *cmd);
 int     execute_builtin2(t_cmd *cmd, t_mini *mini, int a);
+void	free_env_array(char **env_array);
 void    free_heredoc_list(t_heredoc *list);
 #endif

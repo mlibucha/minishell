@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 16:06:38 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/13 11:56:52 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 16:12:41 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ int	is_long(char *number)
 	return (1);
 }
 
-int	mini_exit(t_cmd *cmd, t_mini *mini, int a)
+int mini_exit(t_cmd *cmd, t_mini *mini, int a)
 {
-	long int	status;
+	long int status;
 
 	status = 0;
 	if (a != 0)
@@ -86,6 +86,5 @@ int	mini_exit(t_cmd *cmd, t_mini *mini, int a)
 	if (cmd->args[1])
 		status = ft_atol(cmd->args[1]);
 	free_values(mini);
-	// free_all_cmds(mini);
 	exit(status % 256);
 }

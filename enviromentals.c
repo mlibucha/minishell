@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:56:16 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/12 11:11:30 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 17:29:36 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,19 @@ char	*split_value(char *str)
 	return (NULL);
 }
 
-void	add_env(t_env **list, char *key, char *value, t_mini mini)
+void add_env(t_env **list, char *key, char *value, t_mini mini)
 {
-	if (key == NULL)
-		return ;
+	if (!key)
+		return;
+		
 	if (get_value(list, key) == NULL)
 		list_add(list, key, value);
 	else
 		swap_value(list, key, value);
 	if (mini.envp)
+	{
 		update_env_array(&mini);
+	}
 }
 
 void	del_env(t_env **list, char *key)
@@ -85,24 +88,27 @@ void	del_env(t_env **list, char *key)
 	list_del(list, key);
 }
 
-void	update_env_array(t_mini *mini)
+void update_env_array(t_mini *mini)
 {
-	int	i;
-
-	i = 0;
-	if (mini->envp)
-	{
-		while (mini->envp[i])
-		{
-			free(mini->envp[i]);
-			i++;
-		}
-		free(mini->envp);
-	}
-	mini->envp = convert_env_list_to_array(mini->env_list);
+	char **new_env;
+	
+	if (!mini)
+		return;
+		
+	new_env = convert_env_list_to_array(mini->env_list);
+	if (!new_env)
+		return;
+		
+	// Free old environment array if it exists
+	// if (mini->envp)
+	// {
+	//     free_env_array(mini->envp);
+	// }
+	
+	mini->envp = new_env;
 }
 
-t_env	*init_envs(char **envp, t_mini mini)
+t_env	*init_envs(char **envp, t_mini *mini)
 {
 	t_env	*list;
 	int		i;
@@ -117,12 +123,22 @@ t_env	*init_envs(char **envp, t_mini mini)
 		value = split_value(envp[i]);
 		if (key && value)
 		{
-			add_env(&list, key, value, mini);
+			add_env(&list, key, value, *mini);
 			free(key);
 			free(value);
 		}
+		else
+		{
+			if(key)
+				free(key);
+			if(value)
+				free(value);
+		}
 	}
-	mini.envp = convert_env_list_to_array(list);
+	if (mini->envp)
+        free_env_array(mini->envp);
+	// mini->envp = convert_env_list_to_array(list);
+	mini->env_list = list;
 	return (list);
 }
 

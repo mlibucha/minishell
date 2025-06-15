@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:21:51 by e                 #+#    #+#             */
-/*   Updated: 2025/06/14 16:41:33 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 16:25:38 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,13 @@ void find_env(char **str, t_env *env_list, int pos)
 	while (node)
 	{
 		temp = ft_strjoin("$", node->key);
+		if (!temp)
+		{
+			node = node->next;
+			continue;
+		}
 		char *new_value = find_and_replace(*str, temp, node->value, pos);
+		free(temp);
 		if (new_value)
 		{
 			free(*str);
@@ -54,7 +60,7 @@ int ft_find_sec_quote(char *str, int i, char c)
 	return (-1);
 }
 
-char *transform_quotes(char *str, t_env *env_list)
+char *transform_quotes(char *str, t_mini mini)
 {
 	char c;
 	int d;
@@ -74,7 +80,9 @@ char *transform_quotes(char *str, t_env *env_list)
 		{
 			if(str[d] == '$' && c != '\'')
 			{
-				find_env(&str, env_list, d);
+				if(str[d + 1] == '?')
+					str = find_and_replace(str, "$?", ft_itoa(mini.last_status), d);
+				find_env(&str, mini.env_list, d);
 				de = ft_find_sec_quote(str, d + 1, c);
 			}
 			if (str[d] == ' ')
@@ -90,7 +98,7 @@ char *transform_quotes(char *str, t_env *env_list)
 			d++;
 		}
 	}
-	find_env(&str, env_list, 0);
+	find_env(&str, mini.env_list, 0);
 	return (str);
 }
 

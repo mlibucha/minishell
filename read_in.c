@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 17:01:44 by e                 #+#    #+#             */
-/*   Updated: 2025/06/13 13:21:34 by e                ###   ########.fr       */
+/*   Updated: 2025/06/15 17:26:41 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,34 +89,23 @@ char	**tokenize_input(char *input)
 
 int check_input(char *input, t_mini *mini)
 {
-	int ret;
-
 	if (!input || !*input)
 		return (0);
-	ret = 1;
 	mini->cmds = NULL;
 	mini->cmd_count = 0;
-	input = transform_quotes(input, mini->env_list);
+	input = transform_quotes(input, *mini);
+	//input = find_and_replace(input, "$?", ft_itoa(mini->last_status), 0);
 	parse_to_cmd(mini, tokenize_input(input));
-	if (!mini->cmds || mini->cmd_count == 0 || !mini->cmds[0] || !mini->cmds[0]->cmd)
-	{
-		free_all_cmds(mini);
-		return (0);
-	}
+	if (!mini->cmds || mini->cmd_count == 0 || !mini->cmds[0])
+		return (free_all_cmds(mini), 0);
 	mini->cmd_left = mini->cmd_count;
 	if(mini->cmd_count > 1)
 		return(execute_pipeline(mini));
-	ret = execute_builtin(mini, mini->cmd_count -1 );
-	if(ret != -1)
-		mini->cmd_left--;
-	if (mini->cmd_left == 0)
-	{
-		free_all_cmds(mini);
-		return (ret);
-	}
-	ret = execute_command(mini);
-	free_all_cmds(mini);
-	return (ret);
+	mini->last_status = execute_builtin(mini, mini->cmd_count - 1);
+	if (mini->last_status != -1)
+		return (free_all_cmds(mini), mini->last_status);
+	mini->last_status = execute_command(mini);
+	return (free_all_cmds(mini),mini->last_status);
 }
 
 int	read_input(t_mini *mini)
@@ -131,6 +120,8 @@ int	read_input(t_mini *mini)
 		if (!input)
 		{
 			ft_putstr_fd("exit\n", 1);
+			free_all_cmds(mini);
+			free_values(mini);
 			exit(mini->status);
 		}
 		if (*input)
@@ -138,7 +129,7 @@ int	read_input(t_mini *mini)
 			add_history(input);
 			check_input(input, mini);
 		}
-		free(input);
+		// free(input);
 	}
 	return (0);
 }

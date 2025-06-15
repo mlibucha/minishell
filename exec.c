@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/06/13 21:45:04 by e                ###   ########.fr       */
+/*   Updated: 2025/06/14 20:29:20 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,8 @@ int	execute_command(t_mini *mini)
 
 	if (mini->cmd_count == 1)
 	{
-		if (mini->cmds[0]->heredoc)
-		{
-			handle_heredoc(mini->cmds[0]);
-			return 1;
-		}
+		if(handle_heredoc(mini->cmds[0]))
+			return 0;
 		pid = fork();
 		if (pid == 0)
 		{
