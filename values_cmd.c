@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 04:50:02 by emil              #+#    #+#             */
-/*   Updated: 2025/06/18 12:42:51 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 15:56:56 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	free_cmd(t_cmd *cmd)
 		free(cmd->output_files);
 	}
 	if (cmd->heredoc_delim)
-		free(cmd->heredoc_delim);
+		ft_free(cmd->heredoc_delim);
 	if (cmd->heredoc_list)
 		free_heredoc_list(cmd->heredoc_list);
 }

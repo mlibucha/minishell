@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 06:05:14 by emil              #+#    #+#             */
-/*   Updated: 2025/06/18 13:47:17 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 13:58:09 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ void	find_env(char **str, t_env *env_list, int pos)
 		new_value = replace(*str, temp, node->value, pos);
 		free(temp);
 		if (new_value)
-		{
 			*str = new_value;
-		}
 		node = node->next;
 	}
 }

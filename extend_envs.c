@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 07:14:16 by emil              #+#    #+#             */
-/*   Updated: 2025/06/18 13:46:16 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 14:01:17 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ char	*execute_replace(char *input, t_mini *mini, t_env *env_list, int i)
 	}
 	return (input);
 }
-
 
 char	*extend_envs(char *input, t_mini *mini)
 {

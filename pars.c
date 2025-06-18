@@ -6,16 +6,16 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:40:06 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/18 12:42:20 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 14:03:55 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-t_cmd *init_cmd_struct(int arg_count)
+t_cmd	*init_cmd_struct(int arg_count)
 {
-	t_cmd *cmd;
-	int i;
+	t_cmd	*cmd;
+	int		i;
 
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
@@ -30,18 +30,24 @@ t_cmd *init_cmd_struct(int arg_count)
 		free(cmd);
 		return (NULL);
 	}
-	for (i = 0; i < arg_count + 1; i++)
+	i = 0;
+	while (i < arg_count + 1)
+	{
 		cmd->output_files[i] = NULL;
+		i++;
+	}
 	cmd->argc = 0;
 	cmd->output_count = 0;
 	return (cmd);
 }
 
-void populate_cmd(t_cmd *cmd, char **args, int start, int end)
+void	populate_cmd(t_cmd *cmd, char **args, int start, int end)
 {
-	int i = start;
-	int j = 0;
+	int	i;
+	int	j;
 
+	i = start;
+	j = 0;
 	while (i < end && args[i])
 	{
 		if (!ft_strcmp(args[i], "|"))
@@ -64,9 +70,9 @@ void populate_cmd(t_cmd *cmd, char **args, int start, int end)
 	cmd->argc = j;
 }
 
-t_cmd *create_cmd(char **args, int start, int end)
+t_cmd	*create_cmd(char **args, int start, int end)
 {
-	t_cmd *cmd;
+	t_cmd	*cmd;
 
 	if (!args || end <= start)
 		return (NULL);

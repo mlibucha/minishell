@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/18 13:46:57 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 15:11:10 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ int		export_one_arg(t_mini *mini);
 int		calc_cmd_count(char **args);
 void	heredoc(t_cmd *cmd, char **args, int *i, int end);
 char	*extend_envs(char *input, t_mini *mini);
-char	*handle_normal_replacement(char *s, char *val, int pos, int var_len, int s_len, int val_len);
+
 void	input_redir(t_cmd *cmd, char **args, int *i, int end);
 void	output_redir(t_cmd *cmd, char **args, int *i, int end);
 #endif

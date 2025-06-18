@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:58:19 by e                 #+#    #+#             */
-/*   Updated: 2025/06/18 13:42:15 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 15:18:50 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,16 @@ static char	*empty_replacement(char *s, int pos, int suffix_end, int s_len)
 	return (r);
 }
 
-char	*handle_normal_replacement(char *s, char *val, int pos, int var_len, int s_len, int val_len)
+char *handle_normal_replacement(char *s, char *val, int pos, int var_len)
 {
-	int		new_len;
-	int		remaining;
-	char	*r;
+	int     s_len;
+	int     val_len;
+	int     new_len;
+	int     remaining;
+	char    *r;
 
+	s_len = ft_strlen(s);
+	val_len = ft_strlen(val);
 	new_len = s_len - var_len + val_len;
 	if (new_len < 0)
 		return (ft_strdup(s));
@@ -68,32 +72,26 @@ char	*handle_normal_replacement(char *s, char *val, int pos, int var_len, int s_
 	return (r);
 }
 
-char	*replace(char *s, char *var, char *val, int pos)
+char *replace(char *s, char *var, char *val, int pos)
 {
-	int		s_len;
-	int		var_len;
-	int		val_len;
-	int		suffix_end;
-	char	*result;
+	int     var_len;
+	int     suffix_end;
+	char    *result;
 
 	if (!s || !var || !val)
 		return (NULL);
-	s_len = ft_strlen(s);
 	var_len = ft_strlen(var);
-	val_len = ft_strlen(val);
-	if (pos < 0 || pos >= s_len)
-		return ((s));  // Return a copy instead of original
+	if (pos < 0 || pos >= (int)ft_strlen(s))
+		return (s);
 	if (ft_strncmp(s + pos, var, var_len) != 0)
-		return ((s));  // Return a copy instead of original
-	if (pos + var_len < s_len && is_valid_env_char(s[pos + var_len]))
+		return (s);
+	if (pos + var_len < (int)ft_strlen(s) && is_valid_env_char(s[pos + var_len]))
 	{
-		suffix_end = find_suffix_end(s, pos, var_len, s_len);
-		result = empty_replacement(s, pos, suffix_end, s_len);
+		suffix_end = find_suffix_end(s, pos, var_len, ft_strlen(s));
+		result = empty_replacement(s, pos, suffix_end, ft_strlen(s));
 	}
 	else
-	{
-		result = handle_normal_replacement(s, val, pos, var_len, s_len, val_len);
-	}
-	free(s);  // Free the original string
+		result = handle_normal_replacement(s, val, pos, var_len);
+	free(s);
 	return (result);
 }

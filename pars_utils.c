@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 07:04:44 by emil              #+#    #+#             */
-/*   Updated: 2025/06/18 12:41:23 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 16:04:57 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,13 @@ void	heredoc(t_cmd *cmd, char **args, int *i, int end)
 {
 	char	**new_delims;
 
+	if(cmd->heredoc_delim)
+		ft_free(cmd->heredoc_delim);
 	cmd->heredoc = true;
 	(*i)++;
 	if (*i < end)
 	{
-		new_delims = realloc(cmd->heredoc_delim,
-				(cmd->heredoc_count + 1) * sizeof(char *));
+		new_delims = malloc((cmd->heredoc_count + 1) * sizeof(char *));
 		if (!new_delims)
 			return ;
 		cmd->heredoc_delim = new_delims;
