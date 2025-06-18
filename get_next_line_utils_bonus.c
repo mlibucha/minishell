@@ -6,13 +6,13 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 19:13:59 by mlibucha          #+#    #+#             */
-/*   Updated: 2025/06/13 14:11:13 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:07:46 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-int	found_newline(e_list *list)
+int	found_newline(t_elist *list)
 {
 	int	i;
 
@@ -30,7 +30,7 @@ int	found_newline(e_list *list)
 	return (0);
 }
 
-e_list	*find_last_node(e_list *list)
+t_elist	*find_last_node(t_elist *list)
 {
 	if (list == NULL)
 		return (NULL);
@@ -39,7 +39,7 @@ e_list	*find_last_node(e_list *list)
 	return (list);
 }
 
-void	copy_str(e_list *list, char *str)
+void	copy_str(t_elist *list, char *str)
 {
 	int	i;
 	int	k;
@@ -65,7 +65,7 @@ void	copy_str(e_list *list, char *str)
 	str[k] = '\0';
 }
 
-int	len_to_newline(e_list *list)
+int	len_to_newline(t_elist *list)
 {
 	int	i;
 	int	len;
@@ -91,9 +91,9 @@ int	len_to_newline(e_list *list)
 	return (len);
 }
 
-void	ft_free_nodes(e_list **list, e_list *clean_node, char *buf)
+void	ft_free_nodes(t_elist **list, t_elist *clean_node, char *buf)
 {
-	e_list	*tmp;
+	t_elist	*tmp;
 
 	if (*list == NULL)
 		return ;

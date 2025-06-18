@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:52:47 by e                 #+#    #+#             */
-/*   Updated: 2025/06/18 12:21:54 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 16:14:13 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,7 @@ int	execute_pipeline(t_mini *mini)
 		if (pid == 0)
 			handel_child_p(mini, i, prev_pipe, pipe_fd);
 		else if (pid < 0)
-		{
-			perror("mini: fork");
-			return (1);
-		}
+			return (perror("mini: fork"), 1);
 		cleanup_pipes(&prev_pipe, pipe_fd, mini, i);
 	}
 	while (wait(&status) > 0)

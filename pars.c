@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:40:06 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/18 14:03:55 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:09:29 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,8 @@ void	parse_to_cmd(t_mini *mini, char **args)
 	cmds[mini->cmd_count++] = create_cmd(args, start, i);
 	i = 0;
 	while (++i < mini->cmd_count)
-		cmds[i]->pipe_in = true;
+		if(cmds[i])
+			cmds[i]->pipe_in = true;
 	mini->cmds = cmds;
 	ft_free(args);
 }

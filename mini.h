@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/18 15:11:10 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:05:53 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int		execute_command(t_mini *mini);
 void	update_path(t_mini *mini);
 void	update_env_array(t_mini *mini);
 char	**convert_env_list_to_array(t_env *env_list);
-
+char	*handle_normal_replacement(char *s, char *val, int pos, int var_len);
 void	list_del(t_env **lst, char *key);
 void	list_add(t_env **lst, char *key, char *value);
 void	swap_value(t_env **lst, char *key, char *value);
@@ -127,7 +127,7 @@ int		export_one_arg(t_mini *mini);
 int		calc_cmd_count(char **args);
 void	heredoc(t_cmd *cmd, char **args, int *i, int end);
 char	*extend_envs(char *input, t_mini *mini);
-
+char	*replace2(char *s, char *var, char *val, int pos);
 void	input_redir(t_cmd *cmd, char **args, int *i, int end);
 void	output_redir(t_cmd *cmd, char **args, int *i, int end);
 #endif

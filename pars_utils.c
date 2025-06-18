@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 07:04:44 by emil              #+#    #+#             */
-/*   Updated: 2025/06/18 16:04:57 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:06:14 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	heredoc(t_cmd *cmd, char **args, int *i, int end)
 {
 	char	**new_delims;
 
-	if(cmd->heredoc_delim)
+	if (cmd->heredoc_delim)
 		ft_free(cmd->heredoc_delim);
 	cmd->heredoc = true;
 	(*i)++;

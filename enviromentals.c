@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:56:16 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/18 16:07:30 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:16:51 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,7 @@ void	update_env_array(t_mini *mini)
 {
 	char	**new_env;
 
-	if (!mini || !mini->env_list)
-		return ;
-	if(mini->envp)
+	if (mini->envp)
 		ft_free(mini->envp);
 	new_env = convert_env_list_to_array(mini->env_list);
 	if (!new_env)

@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 07:14:16 by emil              #+#    #+#             */
-/*   Updated: 2025/06/18 14:01:17 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:06:47 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,26 @@ char	*replace2(char *s, char *var, char *val, int pos)
 {
 	int	s_len;
 	int	var_len;
-	int	val_len;
 
 	if (!s || !var || !val)
 		return (NULL);
 	s_len = ft_strlen(s);
 	var_len = ft_strlen(var);
-	val_len = ft_strlen(val);
 	if (pos < 0 || pos >= s_len)
 		return (ft_strdup(s));
 	if (ft_strncmp(s + pos, var, var_len) != 0)
 		return (ft_strdup(s));
-	return (handle_normal_replacement(s, val, pos, var_len, s_len, val_len));
+	return (handle_normal_replacement(s, val, pos, var_len));
+}
+
+char	*fid(char *input, t_mini *mini, int i)
+{
+	char	*itoa;
+
+	itoa = ft_itoa(mini->last_status);
+	input = replace2(input, "$?", itoa, i);
+	free(itoa);
+	return (input);
 }
 
 char	*execute_replace(char *input, t_mini *mini, t_env *env_list, int i)
@@ -38,7 +46,7 @@ char	*execute_replace(char *input, t_mini *mini, t_env *env_list, int i)
 
 	node = env_list;
 	if (input[i + 1] == '?')
-		input = replace2(input, "$?", ft_itoa(mini->last_status), i);
+		input = fid(input, mini, i);
 	else
 	{
 		while (node)
@@ -63,23 +71,24 @@ char	*extend_envs(char *input, t_mini *mini)
 {
 	int		i;
 
-	i = -1;
-	while (input[++i])
+	i = 0;
+	while (input[i])
 	{
-		if (input[i] == '\'')
+		if (input[i] == '\'' && input[i + 1] != '\0')
 		{
 			i++;
 			while (input[i] != '\'' && input[i])
 				i++;
 		}
-		if (input[i] == '"')
+		if (input[i] == '"' && input[i + 1] != '\0')
 		{
 			i++;
 			while (input[i] != '"' && input[i])
 				i++;
 		}
-		if (input[i] == '$')
+		if (input[i] == '$' && input[i + 1] != '\0')
 			input = execute_replace(input, mini, mini->env_list, i);
+		i++;
 	}
 	return (input);
 }

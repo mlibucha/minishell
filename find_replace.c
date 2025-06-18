@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:58:19 by e                 #+#    #+#             */
-/*   Updated: 2025/06/18 15:18:50 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:07:08 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,13 @@ static char	*empty_replacement(char *s, int pos, int suffix_end, int s_len)
 	return (r);
 }
 
-char *handle_normal_replacement(char *s, char *val, int pos, int var_len)
+char	*handle_normal_replacement(char *s, char *val, int pos, int var_len)
 {
-	int     s_len;
-	int     val_len;
-	int     new_len;
-	int     remaining;
-	char    *r;
+	int		s_len;
+	int		val_len;
+	int		new_len;
+	int		remaining;
+	char	*r;
 
 	s_len = ft_strlen(s);
 	val_len = ft_strlen(val);
@@ -72,11 +72,11 @@ char *handle_normal_replacement(char *s, char *val, int pos, int var_len)
 	return (r);
 }
 
-char *replace(char *s, char *var, char *val, int pos)
+char	*replace(char *s, char *var, char *val, int pos)
 {
-	int     var_len;
-	int     suffix_end;
-	char    *result;
+	int		var_len;
+	int		suffix_end;
+	char	*result;
 
 	if (!s || !var || !val)
 		return (NULL);
@@ -85,7 +85,8 @@ char *replace(char *s, char *var, char *val, int pos)
 		return (s);
 	if (ft_strncmp(s + pos, var, var_len) != 0)
 		return (s);
-	if (pos + var_len < (int)ft_strlen(s) && is_valid_env_char(s[pos + var_len]))
+	if (pos + var_len < (int)ft_strlen(s)
+		&& is_valid_env_char(s[pos + var_len]))
 	{
 		suffix_end = find_suffix_end(s, pos, var_len, ft_strlen(s));
 		result = empty_replacement(s, pos, suffix_end, ft_strlen(s));

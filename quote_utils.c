@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 06:05:14 by emil              #+#    #+#             */
-/*   Updated: 2025/06/18 13:58:09 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 16:45:27 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,11 @@ void	swap_characters(char *str, int *d, char c)
 
 void	check_question_mark(char **str, int d, t_mini mini)
 {
+	char	*itoa;
+
+	itoa = ft_itoa(mini.last_status);
 	if ((*str)[d + 1] == '?')
-		*str = replace(*str, "$?", ft_itoa(mini.last_status), d);
+		*str = replace2(*str, "$?", itoa, d);
+	free(itoa);
 	find_env(str, mini.env_list, d);
 }
