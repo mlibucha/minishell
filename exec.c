@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 10:00:00 by e                 #+#    #+#             */
-/*   Updated: 2025/06/15 19:24:28 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 12:10:13 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,16 @@ void	exec_single_cmd(t_mini *mini, t_cmd *cmd)
 	free(cmd_path);
 }
 
-
 int	execute_command(t_mini *mini)
 {
 	pid_t	pid;
 	int		status;
 
+	status = 0;
 	if (mini->cmd_count == 1)
 	{
-		if(handle_heredoc(mini->cmds[0]))
-			return 0;
+		if (handle_heredoc(mini->cmds[0]))
+			return (0);
 		pid = fork();
 		if (pid == 0)
 		{

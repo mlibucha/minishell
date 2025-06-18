@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: emil <emil@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 16:06:38 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/15 16:12:41 by e                ###   ########.fr       */
+/*   Updated: 2025/06/16 04:41:15 by emil             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,22 +51,24 @@ int	is_long(char *number)
 	{
 		if (ft_strlen(number) > 20 || !ft_str_is_numeric(number, 1))
 			return (0);
-		if (ft_strlen(number) == 20 && ft_strcmp(number, "-9223372036854775808") > 0)
+		if (ft_strlen(number) == 20
+			&& ft_strcmp(number, "-9223372036854775808") > 0)
 			return (0);
 	}
 	else
 	{
 		if (ft_strlen(number) > 19 || !ft_str_is_numeric(number, 0))
 			return (0);
-		if (ft_strlen(number) == 19 && ft_strcmp(number, "9223372036854775807") > 0)
+		if (ft_strlen(number) == 19
+			&& ft_strcmp(number, "9223372036854775807") > 0)
 			return (0);
 	}
 	return (1);
 }
 
-int mini_exit(t_cmd *cmd, t_mini *mini, int a)
+int	mini_exit(t_cmd *cmd, t_mini *mini, int a)
 {
-	long int status;
+	long int	status;
 
 	status = 0;
 	if (a != 0)

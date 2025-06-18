@@ -1,29 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_back_bonus.c                             :+:      :+:    :+:   */
+/*   free_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: emil <emil@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/13 12:57:11 by e                 #+#    #+#             */
-/*   Updated: 2025/06/16 05:24:46 by emil             ###   ########.fr       */
+/*   Created: 2025/06/16 04:35:39 by emil              #+#    #+#             */
+/*   Updated: 2025/06/16 04:37:54 by emil             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "mini.h"
 
-void	ft_lstadd_back(t_list **lst, t_list *new)
+void	free_heredoc_list(t_heredoc *list)
 {
-	t_list	*last;
+	t_heredoc	*temp;
 
-	if (lst && new)
+	while (list)
 	{
-		if (*lst == NULL)
-		{
-			*lst = new;
-			return ;
-		}
-		last = ft_lstlast(*lst);
-		last->next = new;
+		temp = list;
+		list = list->next;
+		free(temp->content);
+		free(temp);
 	}
 }

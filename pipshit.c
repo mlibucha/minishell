@@ -6,14 +6,13 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:52:47 by e                 #+#    #+#             */
-/*   Updated: 2025/06/14 13:47:15 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 12:21:54 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "mini.h"
 
-static int create_pipe_if_needed(t_mini *mini, int i, int pipe_fd[2])
+static int	create_pipe_if_needed(t_mini *mini, int i, int pipe_fd[2])
 {
 	if (i < mini->cmd_count - 1)
 	{
@@ -26,7 +25,7 @@ static int create_pipe_if_needed(t_mini *mini, int i, int pipe_fd[2])
 	return (0);
 }
 
-static void handle_child_process(t_mini *mini, int i, int prev_pipe, int pipe_fd[2])
+static void	handel_child_p(t_mini *mini, int i, int prev_pipe, int pipe_fd[2])
 {
 	if (prev_pipe != -1)
 	{
@@ -42,13 +41,12 @@ static void handle_child_process(t_mini *mini, int i, int prev_pipe, int pipe_fd
 	setup_redirections(mini->cmds[i]);
 	if (handle_heredoc(mini->cmds[i]))
 		exit(0);
-	// handle_heredoc(mini->cmds[i]);
-	if(execute_builtin(mini, i) == 0)
+	if (execute_builtin(mini, i) == 0)
 		exit(0);
 	exec_single_cmd(mini, mini->cmds[i]);
 }
 
-static void cleanup_parent_pipes(int *prev_pipe, int pipe_fd[2], t_mini *mini, int i)
+static void	cleanup_pipes(int *prev_pipe, int pipe_fd[2], t_mini *mini, int i)
 {
 	if (*prev_pipe != -1)
 		close(*prev_pipe);
@@ -59,7 +57,7 @@ static void cleanup_parent_pipes(int *prev_pipe, int pipe_fd[2], t_mini *mini, i
 	}
 }
 
-int execute_pipeline(t_mini *mini)
+int	execute_pipeline(t_mini *mini)
 {
 	int		pipe_fd[2];
 	int		prev_pipe;
@@ -75,13 +73,13 @@ int execute_pipeline(t_mini *mini)
 			return (1);
 		pid = fork();
 		if (pid == 0)
-			handle_child_process(mini, i, prev_pipe, pipe_fd);
+			handel_child_p(mini, i, prev_pipe, pipe_fd);
 		else if (pid < 0)
 		{
 			perror("mini: fork");
 			return (1);
 		}
-		cleanup_parent_pipes(&prev_pipe, pipe_fd, mini, i);
+		cleanup_pipes(&prev_pipe, pipe_fd, mini, i);
 	}
 	while (wait(&status) > 0)
 		;

@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:28:01 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/15 21:21:01 by e                ###   ########.fr       */
+/*   Updated: 2025/06/17 22:30:22 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ char	*get_value(t_env **lst, char *key)
 				return (ft_strdup(""));
 			return (node->value);
 		}
-			
 		node = node->next;
 	}
 	return (NULL);
@@ -35,7 +34,7 @@ char	*get_value(t_env **lst, char *key)
 
 void	destroy_list(t_env **lst)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	while (*lst)
 	{
@@ -62,26 +61,6 @@ void	swap_value(t_env **lst, char *key, char *value)
 		}
 		node = node->next;
 	}
-}
-
-void	free_env_list(t_env **lst)
-{
-	t_env	*current;
-	t_env	*next;
-
-	if (!lst || !*lst)
-		return;
-	
-	current = *lst;
-	while (current != NULL)
-	{
-		next = current->next;
-		free(current->key);
-		free(current->value);
-		free(current);
-		current = next;
-	}
-	*lst = NULL;
 }
 
 void	list_add(t_env **lst, char *key, char *value)

@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 17:01:44 by e                 #+#    #+#             */
-/*   Updated: 2025/06/15 21:26:44 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 13:38:43 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,36 +84,35 @@ char	**tokenize_input(char *input)
 	args = ft_split(parsed_input, ' ');
 	free (parsed_input);
 	transform_spaces(args);
+	free(input);
 	return (args);
 }
 
-int check_input(char *input, t_mini *mini)
+int	check_input(char *input, t_mini *mini)
 {
 	if (!input || !*input)
 		return (0);
 	mini->cmds = NULL;
 	mini->cmd_count = 0;
+	input = extend_envs(input, mini);
 	input = transform_quotes(input, *mini);
-	//input = find_and_replace(input, "$?", ft_itoa(mini->last_status), 0);
 	parse_to_cmd(mini, tokenize_input(input));
 	if (!mini->cmds || mini->cmd_count == 0 || !mini->cmds[0])
 		return (free_all_cmds(mini), 0);
 	mini->cmd_left = mini->cmd_count;
-	if(mini->cmd_count > 1)
-		return(execute_pipeline(mini));
 	mini->last_status = execute_builtin(mini, mini->cmd_count - 1);
 	if (mini->last_status != -1)
 		return (free_all_cmds(mini), mini->last_status);
 	mini->last_status = execute_command(mini);
-	return (free_all_cmds(mini),mini->last_status);
+	return (free_all_cmds(mini), mini->last_status);
 }
 
 int	read_input(t_mini *mini)
 {
+	int		status;
 	char	*input;
 
 	update_path(mini);
-	using_history();
 	while (1)
 	{
 		input = readline("\033[32mmini> \033[0m");
@@ -121,15 +120,15 @@ int	read_input(t_mini *mini)
 		{
 			ft_putstr_fd("exit\n", 1);
 			free_all_cmds(mini);
+			status = mini->status;
 			free_values(mini);
-			mini_exit(mini->cmds);
+			exit(status);
 		}
 		if (*input)
 		{
 			add_history(input);
 			check_input(input, mini);
 		}
-		// free(input);
 	}
 	return (0);
 }

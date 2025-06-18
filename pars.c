@@ -6,62 +6,43 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:40:06 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/15 15:16:21 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 12:42:20 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-void	input_redir(t_cmd *cmd, char **args, int *i, int end)
+t_cmd *init_cmd_struct(int arg_count)
 {
-	cmd->input_redir = true;
-	(*i)++;
-	if (*i < end)
-		cmd->input_file = ft_strdup(args[*i]);
-}
-
-void	output_redir(t_cmd *cmd, char **args, int *i, int end)
-{
-	cmd->output_redir = true;
-	if (!ft_strcmp(args[*i], ">>"))
-		cmd->append = true;
-	(*i)++;
-	if (*i < end)
-	{
-		cmd->output_files[cmd->output_count] = ft_strdup(args[*i]);
-		cmd->output_count++;
-	}
-}
-
-void heredoc(t_cmd *cmd, char **args, int *i, int end)
-{
-	cmd->heredoc = true;
-	(*i)++;
-	if (*i < end)
-	{
-		char **new_delims = realloc(cmd->heredoc_delim, 
-								  (cmd->heredoc_count + 1) * sizeof(char *));
-		if (!new_delims)
-			return;
-		cmd->heredoc_delim = new_delims;
-		cmd->heredoc_delim[cmd->heredoc_count] = ft_strdup(args[*i]);
-		cmd->heredoc_count++;
-	}
-}
-
-t_cmd	*create_cmd(char **args, int start, int end)
-{
-	t_cmd	*cmd;
-	int		i;
-	int		j;
+	t_cmd *cmd;
+	int i;
 
 	cmd = malloc(sizeof(t_cmd));
+	if (!cmd)
+		return (NULL);
 	init_cmd(cmd);
-	cmd->args = malloc((end - start + 1) * sizeof(char *));
-	cmd->output_files = malloc((end - start + 1) * sizeof(char *));
-	j = 0;
-	i = start;
-	while (i < end)
+	cmd->args = malloc((arg_count + 1) * sizeof(char *));
+	cmd->output_files = malloc((arg_count + 1) * sizeof(char *));
+	if (!cmd->args || !cmd->output_files)
+	{
+		free(cmd->args);
+		free(cmd->output_files);
+		free(cmd);
+		return (NULL);
+	}
+	for (i = 0; i < arg_count + 1; i++)
+		cmd->output_files[i] = NULL;
+	cmd->argc = 0;
+	cmd->output_count = 0;
+	return (cmd);
+}
+
+void populate_cmd(t_cmd *cmd, char **args, int start, int end)
+{
+	int i = start;
+	int j = 0;
+
+	while (i < end && args[i])
 	{
 		if (!ft_strcmp(args[i], "|"))
 			cmd->pipe_out = 1;
@@ -81,6 +62,18 @@ t_cmd	*create_cmd(char **args, int start, int end)
 	}
 	cmd->args[j] = NULL;
 	cmd->argc = j;
+}
+
+t_cmd *create_cmd(char **args, int start, int end)
+{
+	t_cmd *cmd;
+
+	if (!args || end <= start)
+		return (NULL);
+	cmd = init_cmd_struct(end - start);
+	if (!cmd)
+		return (NULL);
+	populate_cmd(cmd, args, start, end);
 	return (cmd);
 }
 
@@ -88,15 +81,9 @@ void	parse_to_cmd(t_mini *mini, char **args)
 {
 	int		i;
 	int		start;
-	int		cmd_count;
 	t_cmd	**cmds;
 
-	cmd_count = 1;
-	i = -1;
-	while (args[++i])
-		if (!ft_strcmp(args[i], "|"))
-			cmd_count++;
-	cmds = malloc(cmd_count * sizeof(t_cmd *));
+	cmds = malloc(calc_cmd_count(args) * sizeof(t_cmd *));
 	if (!cmds)
 		return ;
 	start = 0;
@@ -115,5 +102,5 @@ void	parse_to_cmd(t_mini *mini, char **args)
 	while (++i < mini->cmd_count)
 		cmds[i]->pipe_in = true;
 	mini->cmds = cmds;
-	free(args);
+	ft_free(args);
 }

@@ -3,20 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: emil <emil@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 16:47:08 by e                 #+#    #+#             */
-/*   Updated: 2025/06/15 19:33:35 by e                ###   ########.fr       */
+/*   Updated: 2025/06/16 04:35:50 by emil             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #include "mini.h"
 
-void display_heredoc_list(t_heredoc *list)
+void	display_heredoc_list(t_heredoc *list)
 {
-	t_heredoc *current;
+	t_heredoc	*current;
 
 	current = list;
 	while (current)
@@ -32,9 +30,9 @@ void display_heredoc_list(t_heredoc *list)
 	}
 }
 
-static t_heredoc *create_heredoc_node(char *line)
+static t_heredoc	*create_heredoc_node(char *line)
 {
-	t_heredoc *node;
+	t_heredoc	*node;
 
 	node = malloc(sizeof(t_heredoc));
 	if (!node)
@@ -49,14 +47,14 @@ static t_heredoc *create_heredoc_node(char *line)
 	return (node);
 }
 
-static void add_to_heredoc_list(t_heredoc **list, t_heredoc *new)
+static void	add_to_heredoc_list(t_heredoc **list, t_heredoc *new)
 {
-	t_heredoc *current;
+	t_heredoc	*current;
 
 	if (!*list)
 	{
 		*list = new;
-		return;
+		return ;
 	}
 	current = *list;
 	while (current->next)
@@ -64,11 +62,11 @@ static void add_to_heredoc_list(t_heredoc **list, t_heredoc *new)
 	current->next = new;
 }
 
-static void read_heredoc_content(t_heredoc **list, char **delimiters, int delim_count)
+static void	read_content(t_heredoc **list, char **delimiters, int delim_count)
 {
-	char *line;
-	int current_delim;
-	char *trimmed_line;
+	char	*line;
+	int		current_delim;
+	char	*trimmed_line;
 
 	current_delim = 0;
 	while (current_delim < delim_count)
@@ -85,7 +83,7 @@ static void read_heredoc_content(t_heredoc **list, char **delimiters, int delim_
 		{
 			free(line);
 			current_delim++;
-			continue;
+			continue ;
 		}
 		add_to_heredoc_list(list, create_heredoc_node(line));
 		free(line);
@@ -93,33 +91,19 @@ static void read_heredoc_content(t_heredoc **list, char **delimiters, int delim_
 	display_heredoc_list(*list);
 }
 
-int handle_heredoc(t_cmd *cmd)
+int	handle_heredoc(t_cmd *cmd)
 {
-	t_heredoc *heredoc_list;
+	t_heredoc	*heredoc_list;
 
 	if (!cmd->heredoc || !cmd->heredoc_delim || cmd->heredoc_count == 0)
-		return 0;
+		return (0);
 	heredoc_list = NULL;
-	read_heredoc_content(&heredoc_list, cmd->heredoc_delim, cmd->heredoc_count);
+	read_content(&heredoc_list, cmd->heredoc_delim, cmd->heredoc_count);
 	cmd->heredoc_list = heredoc_list;
 	if (cmd->input_file)
 	{
 		free(cmd->input_file);
 		cmd->input_file = NULL;
 	}
-	return 1;
-}
-
-
-void free_heredoc_list(t_heredoc *list)
-{
-	t_heredoc *temp;
-
-	while (list)
-	{
-		temp = list;
-		list = list->next;
-		free(temp->content);
-		free(temp);
-	}
+	return (1);
 }

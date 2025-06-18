@@ -6,19 +6,19 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 19:09:20 by e                 #+#    #+#             */
-/*   Updated: 2025/06/14 18:24:59 by e                ###   ########.fr       */
+/*   Updated: 2025/06/16 11:28:46 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini.h"
 
-int setup_input_redir(t_cmd *cmd)
+int	setup_input_redir(t_cmd *cmd)
 {
-	int fd;
-	int saved_stdin;
+	int	fd;
+	int	saved_stdin;
 
 	if (!cmd->input_redir || !cmd->input_file)
-		return 0;
+		return (0);
 	saved_stdin = dup(STDIN_FILENO);
 	if (cmd->heredoc)
 	{
@@ -37,10 +37,10 @@ int setup_input_redir(t_cmd *cmd)
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 	close(saved_stdin);
-	return 1;
+	return (1);
 }
 
-int	setup_output_redir(t_cmd *cmd)
+void	setup_output_redir(t_cmd *cmd)
 {
 	int		fd;
 	int		flags;
@@ -48,7 +48,7 @@ int	setup_output_redir(t_cmd *cmd)
 	char	*output_file;
 
 	if (!cmd->output_redir || !cmd->output_files || cmd->output_count == 0)
-		return 0;
+		return ;
 	i = -1;
 	while (++i < cmd->output_count)
 	{
@@ -60,20 +60,18 @@ int	setup_output_redir(t_cmd *cmd)
 			flags = flags | O_TRUNC;
 		fd = open(output_file, flags, 0644);
 		if (fd < 0)
-		{
 			perror("mini: output redirection");
+		if (fd < 0)
 			exit(EXIT_FAILURE);
-		}
 		if (i == cmd->output_count - 1)
 			dup2(fd, STDOUT_FILENO);
 		close(fd);
 	}
-	return 1;
 }
 
 int	setup_redirections(t_cmd *cmd)
 {
 	setup_input_redir(cmd);
 	setup_output_redir(cmd);
-	return 0;
+	return (0);
 }
