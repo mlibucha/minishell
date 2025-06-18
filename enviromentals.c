@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:56:16 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/18 17:16:51 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:19:50 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*split_value(char *str)
 	return (NULL);
 }
 
-void	add_env(t_env **list, char *key, char *value, t_mini mini)
+void	add_env(t_env **list, char *key, char *value)
 {
 	if (!key)
 		return ;
@@ -74,10 +74,6 @@ void	add_env(t_env **list, char *key, char *value, t_mini mini)
 		list_add(list, key, value);
 	else
 		swap_value(list, key, value);
-	if (mini.envp)
-	{
-		update_env_array(&mini);
-	}
 }
 
 void	del_env(t_env **list, char *key)

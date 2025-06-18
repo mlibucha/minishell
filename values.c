@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:01:16 by e                 #+#    #+#             */
-/*   Updated: 2025/06/17 22:42:31 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:20:29 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	update_path(t_mini *mini)
 		mini->status = 1;
 		return ;
 	}
-	add_env(&mini->env_list, "PWD", pwd, *mini);
+	add_env(&mini->env_list, "PWD", pwd);
 	free(pwd);
 	mini->status = 0;
 }

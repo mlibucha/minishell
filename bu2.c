@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 16:11:00 by estolarc          #+#    #+#             */
-/*   Updated: 2025/06/18 13:58:43 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:20:11 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	mini_export(t_cmd *cmd, t_mini *mini)
 		value = split_value(cmd->args[i]);
 		if (key)
 		{
-			add_env(&mini->env_list, key, value, *mini);
+			add_env(&mini->env_list, key, value);
 			free(key);
 			free(value);
 		}

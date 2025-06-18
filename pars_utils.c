@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 07:04:44 by emil              #+#    #+#             */
-/*   Updated: 2025/06/18 17:06:14 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 18:52:11 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,42 @@ int	calc_cmd_count(char **args)
 	return (cmd_count);
 }
 
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
+{
+	void	*new_ptr;
+	size_t	copy_size;
+
+	if (new_size == 0)
+	{
+		free(ptr);
+		return (NULL);
+	}
+	if (ptr == NULL)
+		return (malloc(new_size));
+	new_ptr = malloc(new_size);
+	if (new_ptr == NULL)
+		return (NULL);
+	if (old_size < new_size)
+		copy_size = old_size;
+	else
+		copy_size = new_size;
+	if (copy_size > 0)
+		memcpy(new_ptr, ptr, copy_size);
+	free(ptr);
+	return (new_ptr);
+}
+
 void	heredoc(t_cmd *cmd, char **args, int *i, int end)
 {
 	char	**new_delims;
 
-	if (cmd->heredoc_delim)
-		ft_free(cmd->heredoc_delim);
 	cmd->heredoc = true;
 	(*i)++;
 	if (*i < end)
 	{
-		new_delims = malloc((cmd->heredoc_count + 1) * sizeof(char *));
+		new_delims = ft_realloc(cmd->heredoc_delim,
+				cmd->heredoc_count * sizeof(char *),
+				(cmd->heredoc_count + 1) * sizeof(char *));
 		if (!new_delims)
 			return ;
 		cmd->heredoc_delim = new_delims;

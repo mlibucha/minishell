@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:52:47 by e                 #+#    #+#             */
-/*   Updated: 2025/06/18 16:14:13 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 18:35:31 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ static void	handel_child_p(t_mini *mini, int i, int prev_pipe, int pipe_fd[2])
 	}
 	setup_redirections(mini->cmds[i]);
 	if (handle_heredoc(mini->cmds[i]))
+	{
+		free_all_cmds(mini);
 		exit(0);
+	}
 	if (execute_builtin(mini, i) == 0)
 		exit(0);
 	exec_single_cmd(mini, mini->cmds[i]);

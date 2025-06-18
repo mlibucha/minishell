@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:03:37 by e                 #+#    #+#             */
-/*   Updated: 2025/06/18 17:05:53 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:19:57 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int		execute_builtin(t_mini *mini, int a);
 t_env	*init_envs(char **envp, t_mini *mini);
 void	print_envs(t_env **list);
 void	del_env(t_env **list, char *key);
-void	add_env(t_env **list, char *key, char *value, t_mini mini);
+void	add_env(t_env **list, char *key, char *value);
 char	*split_value(char *str);
 char	*split_key(char *str);
 int		ft_strcmp(const char *s1, const char *s2);

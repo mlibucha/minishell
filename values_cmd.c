@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 04:50:02 by emil              #+#    #+#             */
-/*   Updated: 2025/06/18 15:56:56 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 18:48:47 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,24 @@ void	free_output_files(t_cmd *cmd)
 	i = 0;
 	while (i < cmd->output_count)
 		free(cmd->output_files[i++]);
+}
+
+void	free_heredoc_delims(t_cmd *cmd)
+{
+	int	i;
+
+	if (!cmd->heredoc_delim)
+		return ;
+	i = 0;
+	while (i < cmd->heredoc_count && cmd->heredoc_delim[i])
+	{
+		free(cmd->heredoc_delim[i]);
+		cmd->heredoc_delim[i] = NULL;
+		i++;
+	}
+	free(cmd->heredoc_delim);
+	cmd->heredoc_delim = NULL;
+	cmd->heredoc_count = 0;
 }
 
 void	free_cmd(t_cmd *cmd)
@@ -44,7 +62,7 @@ void	free_cmd(t_cmd *cmd)
 		free(cmd->output_files);
 	}
 	if (cmd->heredoc_delim)
-		ft_free(cmd->heredoc_delim);
+		free_heredoc_delims(cmd);
 	if (cmd->heredoc_list)
 		free_heredoc_list(cmd->heredoc_list);
 }

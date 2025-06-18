@@ -6,7 +6,7 @@
 /*   By: e <e@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 05:17:59 by emil              #+#    #+#             */
-/*   Updated: 2025/06/17 22:41:25 by e                ###   ########.fr       */
+/*   Updated: 2025/06/18 17:20:18 by e                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_env	*init_envs(char **envp, t_mini *mini)
 		value = split_value(envp[i]);
 		if (key && value)
 		{
-			add_env(&list, key, value, *mini);
+			add_env(&list, key, value);
 			free(key);
 			free(value);
 		}
